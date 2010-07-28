@@ -1,0 +1,4 @@
+The folder contains components/libraries, which are used by the project. These are:
+
+1) AForge.NET Framework (used few libraries from there)
+   http://www.aforgenet.com/framework/
