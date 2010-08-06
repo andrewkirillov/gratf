@@ -225,19 +225,29 @@ namespace GlyphRecognitionProto
             List<IntPoint> rightEdgePoints1 = new List<IntPoint>( );
             List<IntPoint> rightEdgePoints2 = new List<IntPoint>( );
 
-            IntPoint step = new IntPoint( stepSize, 0 );
+            int tx1, tx2, ty;
+            int widthM1 = image.Width - 1;
 
             for ( int k = 0; k < leftEdgePoints.Count; k++ )
             {
-                leftEdgePoints1.Add( leftEdgePoints[k] - step );
-                leftEdgePoints2.Add( leftEdgePoints[k] + step );
-                rightEdgePoints1.Add( rightEdgePoints[k] - step );
-                rightEdgePoints2.Add( rightEdgePoints[k] + step );
+                tx1 = leftEdgePoints[k].X - stepSize;
+                tx2 = leftEdgePoints[k].X + stepSize;
+                ty = leftEdgePoints[k].Y;
+
+                leftEdgePoints1.Add( new IntPoint( ( tx1 < 0 ) ? 0 : tx1, ty ) );
+                leftEdgePoints2.Add( new IntPoint( ( tx2 > widthM1 ) ? widthM1 : tx2, ty ) );
+
+                tx1 = rightEdgePoints[k].X - stepSize;
+                tx2 = rightEdgePoints[k].X + stepSize;
+                ty = rightEdgePoints[k].Y;
+
+                rightEdgePoints1.Add( new IntPoint( ( tx1 < 0 ) ? 0 : tx1, ty ) );
+                rightEdgePoints2.Add( new IntPoint( ( tx2 > widthM1 ) ? widthM1 : tx2, ty ) );
             }
 
             // collect pixel values from specified points
-            byte[] leftValues1 = image.Collect8bppPixelValues( leftEdgePoints1 );
-            byte[] leftValues2 = image.Collect8bppPixelValues( leftEdgePoints2 );
+            byte[] leftValues1  = image.Collect8bppPixelValues( leftEdgePoints1 );
+            byte[] leftValues2  = image.Collect8bppPixelValues( leftEdgePoints2 );
             byte[] rightValues1 = image.Collect8bppPixelValues( rightEdgePoints1 );
             byte[] rightValues2 = image.Collect8bppPixelValues( rightEdgePoints2 );
 
