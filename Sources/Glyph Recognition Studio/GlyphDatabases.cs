@@ -1,0 +1,154 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using System.Xml;
+
+using AForge.Vision.GlyphRecognition;
+
+namespace GlyphRecognitionStudio
+{
+    class GlyphDatabases
+    {
+        private Dictionary<string, GlyphDatabase> dbs = new Dictionary<string, GlyphDatabase>( );
+
+        public GlyphDatabase this[string name]
+        {
+            get { return dbs[name]; }
+        }
+
+        #region XML Tag Names
+        private const string databaseTag = "Database";
+        private const string glyphTag = "Glyph";
+        private const string nameAttr = "name";
+        private const string sizeAttr = "size";
+        private const string dataAttr = "data";
+        private const string countAttr = "count";
+        #endregion
+
+        public void AddGlyphDatabase( string name, GlyphDatabase db )
+        {
+            if ( !dbs.ContainsKey( name ) )
+            {
+                dbs.Add( name, db );
+            }
+            else
+            {
+                throw new ApplicationException( "A glyph database with such name already exists" );
+            }
+        }
+
+        public void RemoveGlyphDatabase( string name )
+        {
+            if ( dbs.ContainsKey( name ) )
+            {
+                dbs.Remove( name );
+            }
+        }
+
+        public void Save( XmlTextWriter xmlOut )
+        {
+            foreach ( KeyValuePair<string, GlyphDatabase> kvp in dbs )
+            {
+                xmlOut.WriteStartElement( databaseTag );
+                xmlOut.WriteAttributeString( nameAttr, kvp.Key );
+                xmlOut.WriteAttributeString( sizeAttr, kvp.Value.Size.ToString( ) );
+                xmlOut.WriteAttributeString( countAttr, kvp.Value.Count.ToString( ) );
+
+                // save glyps
+                foreach ( Glyph glyph in kvp.Value )
+                {
+                    xmlOut.WriteStartElement( glyphTag );
+                    xmlOut.WriteAttributeString( nameAttr, glyph.Name );
+                    xmlOut.WriteAttributeString( dataAttr, GlyphDataToString( glyph.Data ) );
+                    xmlOut.WriteEndElement( );
+                }
+
+                xmlOut.WriteEndElement( );
+            }
+        }
+
+        public void Load( XmlTextReader xmlIn )
+        {
+            // read to the first node
+            xmlIn.Read( );
+
+            int startingDept = xmlIn.Depth;
+
+            while ( ( xmlIn.Name == databaseTag ) && ( xmlIn.NodeType == XmlNodeType.Element ) && ( xmlIn.Depth >= startingDept ) )
+            {
+                string name = xmlIn.GetAttribute( nameAttr );
+                int size = int.Parse( xmlIn.GetAttribute( sizeAttr ) );
+                int count = int.Parse( xmlIn.GetAttribute( countAttr ) );
+
+                // create new database and add it to collection
+                GlyphDatabase db = new GlyphDatabase( size );
+                AddGlyphDatabase( name, db );
+
+                if ( count > 0 )
+                {
+                    // read all glyphs
+                    for ( int i = 0; i < count; i++ )
+                    {
+                        // read to the next glyp node
+                        xmlIn.Read( );
+
+                        string glyphName = xmlIn.GetAttribute( nameAttr );
+                        string glyphStrData = xmlIn.GetAttribute( dataAttr );
+
+                        // create new glyph and add it database
+                        Glyph glyph = new Glyph( glyphName, GlyphDataFromString( glyphStrData, size ) );
+                        db.Add( glyph );
+                    }
+
+                    // read to the end tag
+                    xmlIn.Read( );
+                }
+
+                // read to the next node
+                xmlIn.Read( );
+            }
+        }
+
+        public List<string> GetDatabaseNames( )
+        {
+            return new List<string>( dbs.Keys );;
+        }
+
+
+        #region Tool Methods
+
+        private static string GlyphDataToString( byte[,] glyphData )
+        {
+            StringBuilder sb = new StringBuilder( );
+            int glyphSize = glyphData.GetLength( 0 );
+
+            for ( int i = 0; i < glyphSize; i++ )
+            {
+                for ( int j = 0; j < glyphSize; j++ )
+                {
+                    sb.Append( glyphData[i, j] );
+                }
+            }
+
+            return sb.ToString( );
+        }
+
+        private static byte[,] GlyphDataFromString( string glyphStrData, int glyphSize )
+        {
+            byte[,] glyphData = new byte[glyphSize, glyphSize];
+
+            for ( int i = 0, k = 0; i < glyphSize; i++ )
+            {
+                for ( int j = 0; j < glyphSize; j++, k++ )
+                {
+                    glyphData[i, j] = (byte) ( ( glyphStrData[k] == '0' ) ? 0 : 1 );
+                }
+            }
+
+            return glyphData;
+        }
+
+        #endregion
+    }
+}
