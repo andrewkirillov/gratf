@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Glyph Recognition Studio
+// http://www.aforgenet.com/projects/gratf/
+//
+// Copyright © Andrew Kirillov, 2010
+// andrew.kirillov@aforgenet.com
+//
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -156,7 +163,7 @@ namespace GlyphRecognitionStudio
         // Add new glyph collection
         private void newToolStripMenuItem_Click( object sender, EventArgs e )
         {
-            NewGlyphCollectionForm newCollectionForm = new NewGlyphCollectionForm( );
+            NewGlyphCollectionForm newCollectionForm = new NewGlyphCollectionForm( glyphDatabases.GetDatabaseNames( ) );
 
             if ( newCollectionForm.ShowDialog( ) == DialogResult.OK )
             {
@@ -190,15 +197,24 @@ namespace GlyphRecognitionStudio
             deleteToolStripMenuItem.Enabled = ( glyphCollectionsList.SelectedIndices.Count != 0 );
         }
 
+        // Opening context menu for a glyph collection
+        private void glyphCollectionContextMenu_Opening( object sender, CancelEventArgs e )
+        {
+            newGlyphToolStripMenuItem.Enabled = ( activeGlyphDatabase != null );
+
+            editGlyphToolStripMenuItem.Enabled =
+            deleteGlyphToolStripMenuItem.Enabled = ( activeGlyphDatabase != null ) && ( glyphList.SelectedIndices.Count != 0 );
+        }
+
         // Add new glyph to the active collection
-        private void newToolStripMenuItem1_Click( object sender, EventArgs e )
+        private void newGlyphToolStripMenuItem_Click( object sender, EventArgs e )
         {
             if ( activeGlyphDatabase != null )
             {
                 // create new glyph ...
                 Glyph glyph = new Glyph( string.Empty, activeGlyphDatabase.Size );
                 // ... and pass it the glyph editting form
-                EditGlyphForm glyphForm = new EditGlyphForm( glyph );
+                EditGlyphForm glyphForm = new EditGlyphForm( glyph, activeGlyphDatabase.GetGlyphNames( ) );
                 glyphForm.Text = "New Glyph";
 
                 if ( glyphForm.ShowDialog( ) == DialogResult.OK )
@@ -221,6 +237,61 @@ namespace GlyphRecognitionStudio
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
                     }
                 }
+            }
+        }
+
+        // Edit selected glyph
+        private void editGlyphToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            if ( ( activeGlyphDatabase != null ) && ( glyphList.SelectedIndices.Count != 0 ) )
+            {
+                // get selected item and it glyph ...
+                ListViewItem lvi = glyphList.SelectedItems[0];
+                Glyph glyph = activeGlyphDatabase[lvi.Text];
+                string glyphOldName = glyph.Name;
+                // ... and pass it the glyph editting form
+                EditGlyphForm glyphForm = new EditGlyphForm( glyph, activeGlyphDatabase.GetGlyphNames( ) );
+                glyphForm.Text = "Edit Glyph";
+
+                if ( glyphForm.ShowDialog( ) == DialogResult.OK )
+                {
+                    try
+                    {
+                        // update glyph's name in the database and list
+                        activeGlyphDatabase.Rename( glyphOldName, glyph.Name );
+                        lvi.Text = glyph.Name;
+
+                        // temporary remove icon from the list item
+                        lvi.ImageKey = null;
+
+                        // remove old icon and add new one
+                        glyphsImageList.Images.RemoveByKey( glyphOldName );
+                        glyphsImageList.Images.Add( glyph.Name, CreateIconForGlyph( glyph ) );
+
+                        // restor item's icon
+                        lvi.ImageKey = glyph.Name;
+                    }
+                    catch
+                    {
+                        MessageBox.Show( string.Format( "A glyph with the name '{0}' already exists in the database", glyph.Name ),
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    }
+                }
+            }
+        }
+
+        // Delete selected glyph
+        private void deleteGlyphToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            if ( ( activeGlyphDatabase != null ) && ( glyphList.SelectedIndices.Count != 0 ) )
+            {
+                // get selected item
+                ListViewItem lvi = glyphList.SelectedItems[0];
+
+                // remove glyph from database, from list view and image list
+                activeGlyphDatabase.Remove( lvi.Text );
+                glyphList.Items.Remove( lvi );
+                glyphsImageList.Images.RemoveByKey( lvi.Text );
             }
         }
 

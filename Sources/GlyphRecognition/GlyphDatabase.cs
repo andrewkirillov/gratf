@@ -37,6 +37,10 @@ namespace AForge.Vision.GlyphRecognition
             get { return glyphs.Count; }
         }
 
+        public Glyph this[string name]
+        {
+            get { return glyphs[name]; }
+        }
 
         public GlyphDatabase( int size )
         {
@@ -55,12 +59,24 @@ namespace AForge.Vision.GlyphRecognition
 
         public void Remove( string name )
         {
+            glyphs.Remove( name );
         }
 
         public void Rename( string name, string newName )
         {
             if ( name == newName )
                 return;
+
+            Glyph glyph = glyphs[name];
+            glyphs.Remove( name );
+
+            glyph.Name = newName;
+            glyphs.Add( newName, glyph );
+        }
+
+        public List<string> GetGlyphNames( )
+        {
+            return new List<string>( glyphs.Keys ); ;
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿// AForge.NET Framework
-// Simple Player sample application
+﻿// Glyph Recognition Studio
+// http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2008
-// andrew.kirillov@gmail.com
+// Copyright © Andrew Kirillov, 2010
+// andrew.kirillov@aforgenet.com
 //
 
 using System;

@@ -28,13 +28,16 @@
         /// </summary>
         private void InitializeComponent( )
         {
+            this.components = new System.ComponentModel.Container( );
             this.label1 = new System.Windows.Forms.Label( );
             this.nameBox = new System.Windows.Forms.TextBox( );
             this.groupBox1 = new System.Windows.Forms.GroupBox( );
-            this.glyphEditor = new GlyphRecognitionStudio.GlyphEditorControl( );
             this.okButton = new System.Windows.Forms.Button( );
             this.cancelButton = new System.Windows.Forms.Button( );
+            this.errorProvider = new System.Windows.Forms.ErrorProvider( this.components );
+            this.glyphEditor = new GlyphRecognitionStudio.GlyphEditorControl( );
             this.groupBox1.SuspendLayout( );
+            ( (System.ComponentModel.ISupportInitialize) ( this.errorProvider ) ).BeginInit( );
             this.SuspendLayout( );
             // 
             // label1
@@ -50,7 +53,7 @@
             // 
             this.nameBox.Location = new System.Drawing.Point( 55, 20 );
             this.nameBox.Name = "nameBox";
-            this.nameBox.Size = new System.Drawing.Size( 205, 20 );
+            this.nameBox.Size = new System.Drawing.Size( 195, 20 );
             this.nameBox.TabIndex = 1;
             this.nameBox.TextChanged += new System.EventHandler( this.nameBox_TextChanged );
             // 
@@ -63,13 +66,6 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Glyph Image";
-            // 
-            // glyphEditor
-            // 
-            this.glyphEditor.Location = new System.Drawing.Point( 10, 20 );
-            this.glyphEditor.Name = "glyphEditor";
-            this.glyphEditor.Size = new System.Drawing.Size( 230, 230 );
-            this.glyphEditor.TabIndex = 0;
             // 
             // okButton
             // 
@@ -93,6 +89,17 @@
             this.cancelButton.Text = "&Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
+            // errorProvider
+            // 
+            this.errorProvider.ContainerControl = this;
+            // 
+            // glyphEditor
+            // 
+            this.glyphEditor.Location = new System.Drawing.Point( 10, 20 );
+            this.glyphEditor.Name = "glyphEditor";
+            this.glyphEditor.Size = new System.Drawing.Size( 230, 230 );
+            this.glyphEditor.TabIndex = 0;
+            // 
             // EditGlyphForm
             // 
             this.AcceptButton = this.okButton;
@@ -114,6 +121,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Edit Glyph";
             this.groupBox1.ResumeLayout( false );
+            ( (System.ComponentModel.ISupportInitialize) ( this.errorProvider ) ).EndInit( );
             this.ResumeLayout( false );
             this.PerformLayout( );
 
@@ -127,5 +135,6 @@
         private GlyphEditorControl glyphEditor;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.ErrorProvider errorProvider;
     }
 }

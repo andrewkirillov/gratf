@@ -46,7 +46,9 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox( );
             this.glyphList = new System.Windows.Forms.ListView( );
             this.glyphCollectionContextMenu = new System.Windows.Forms.ContextMenuStrip( this.components );
-            this.newToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem( );
+            this.newGlyphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+            this.editGlyphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+            this.deleteGlyphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
             this.groupBox1 = new System.Windows.Forms.GroupBox( );
             this.glyphCollectionsList = new System.Windows.Forms.ListView( );
             this.nameHeader = new System.Windows.Forms.ColumnHeader( );
@@ -230,6 +232,7 @@
                         | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.glyphList.ContextMenuStrip = this.glyphCollectionContextMenu;
             this.glyphList.Location = new System.Drawing.Point( 5, 20 );
+            this.glyphList.MultiSelect = false;
             this.glyphList.Name = "glyphList";
             this.glyphList.Size = new System.Drawing.Size( 203, 262 );
             this.glyphList.TabIndex = 0;
@@ -239,16 +242,33 @@
             // glyphCollectionContextMenu
             // 
             this.glyphCollectionContextMenu.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem1} );
+            this.newGlyphToolStripMenuItem,
+            this.editGlyphToolStripMenuItem,
+            this.deleteGlyphToolStripMenuItem} );
             this.glyphCollectionContextMenu.Name = "glyphCollectionContextMenu";
-            this.glyphCollectionContextMenu.Size = new System.Drawing.Size( 99, 26 );
+            this.glyphCollectionContextMenu.Size = new System.Drawing.Size( 153, 92 );
+            this.glyphCollectionContextMenu.Opening += new System.ComponentModel.CancelEventHandler( this.glyphCollectionContextMenu_Opening );
             // 
-            // newToolStripMenuItem1
+            // newGlyphToolStripMenuItem
             // 
-            this.newToolStripMenuItem1.Name = "newToolStripMenuItem1";
-            this.newToolStripMenuItem1.Size = new System.Drawing.Size( 98, 22 );
-            this.newToolStripMenuItem1.Text = "&New";
-            this.newToolStripMenuItem1.Click += new System.EventHandler( this.newToolStripMenuItem1_Click );
+            this.newGlyphToolStripMenuItem.Name = "newGlyphToolStripMenuItem";
+            this.newGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.newGlyphToolStripMenuItem.Text = "&New";
+            this.newGlyphToolStripMenuItem.Click += new System.EventHandler( this.newGlyphToolStripMenuItem_Click );
+            // 
+            // editGlyphToolStripMenuItem
+            // 
+            this.editGlyphToolStripMenuItem.Name = "editGlyphToolStripMenuItem";
+            this.editGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.editGlyphToolStripMenuItem.Text = "&Edit";
+            this.editGlyphToolStripMenuItem.Click += new System.EventHandler( this.editGlyphToolStripMenuItem_Click );
+            // 
+            // deleteGlyphToolStripMenuItem
+            // 
+            this.deleteGlyphToolStripMenuItem.Name = "deleteGlyphToolStripMenuItem";
+            this.deleteGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.deleteGlyphToolStripMenuItem.Text = "&Delete";
+            this.deleteGlyphToolStripMenuItem.Click += new System.EventHandler( this.deleteGlyphToolStripMenuItem_Click );
             // 
             // groupBox1
             // 
@@ -299,38 +319,38 @@
             this.renameToolStripMenuItem,
             this.deleteToolStripMenuItem} );
             this.glyphCollectionsContextMenu.Name = "glyphCollectionsContextMenu";
-            this.glyphCollectionsContextMenu.Size = new System.Drawing.Size( 153, 120 );
+            this.glyphCollectionsContextMenu.Size = new System.Drawing.Size( 118, 98 );
             this.glyphCollectionsContextMenu.Opening += new System.ComponentModel.CancelEventHandler( this.glyphCollectionsContextMenu_Opening );
             // 
             // activateToolStripMenuItem
             // 
             this.activateToolStripMenuItem.Name = "activateToolStripMenuItem";
-            this.activateToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.activateToolStripMenuItem.Size = new System.Drawing.Size( 117, 22 );
             this.activateToolStripMenuItem.Text = "&Activate";
             this.activateToolStripMenuItem.Click += new System.EventHandler( this.activateToolStripMenuItem_Click );
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size( 149, 6 );
+            this.toolStripMenuItem2.Size = new System.Drawing.Size( 114, 6 );
             // 
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.newToolStripMenuItem.Size = new System.Drawing.Size( 117, 22 );
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler( this.newToolStripMenuItem_Click );
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size( 117, 22 );
             this.renameToolStripMenuItem.Text = "&Rename";
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size( 117, 22 );
             this.deleteToolStripMenuItem.Text = "&Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler( this.deleteToolStripMenuItem_Click );
             // 
@@ -428,7 +448,9 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ListView glyphList;
         private System.Windows.Forms.ContextMenuStrip glyphCollectionContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem newGlyphToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editGlyphToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteGlyphToolStripMenuItem;
     }
 }
 

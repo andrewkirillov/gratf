@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Glyph Recognition Studio
+// http://www.aforgenet.com/projects/gratf/
+//
+// Copyright © Andrew Kirillov, 2010
+// andrew.kirillov@aforgenet.com
+//
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
