@@ -246,27 +246,27 @@
             this.editGlyphToolStripMenuItem,
             this.deleteGlyphToolStripMenuItem} );
             this.glyphCollectionContextMenu.Name = "glyphCollectionContextMenu";
-            this.glyphCollectionContextMenu.Size = new System.Drawing.Size( 153, 92 );
+            this.glyphCollectionContextMenu.Size = new System.Drawing.Size( 108, 70 );
             this.glyphCollectionContextMenu.Opening += new System.ComponentModel.CancelEventHandler( this.glyphCollectionContextMenu_Opening );
             // 
             // newGlyphToolStripMenuItem
             // 
             this.newGlyphToolStripMenuItem.Name = "newGlyphToolStripMenuItem";
-            this.newGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.newGlyphToolStripMenuItem.Size = new System.Drawing.Size( 107, 22 );
             this.newGlyphToolStripMenuItem.Text = "&New";
             this.newGlyphToolStripMenuItem.Click += new System.EventHandler( this.newGlyphToolStripMenuItem_Click );
             // 
             // editGlyphToolStripMenuItem
             // 
             this.editGlyphToolStripMenuItem.Name = "editGlyphToolStripMenuItem";
-            this.editGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.editGlyphToolStripMenuItem.Size = new System.Drawing.Size( 107, 22 );
             this.editGlyphToolStripMenuItem.Text = "&Edit";
             this.editGlyphToolStripMenuItem.Click += new System.EventHandler( this.editGlyphToolStripMenuItem_Click );
             // 
             // deleteGlyphToolStripMenuItem
             // 
             this.deleteGlyphToolStripMenuItem.Name = "deleteGlyphToolStripMenuItem";
-            this.deleteGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.deleteGlyphToolStripMenuItem.Size = new System.Drawing.Size( 107, 22 );
             this.deleteGlyphToolStripMenuItem.Text = "&Delete";
             this.deleteGlyphToolStripMenuItem.Click += new System.EventHandler( this.deleteGlyphToolStripMenuItem_Click );
             // 
@@ -383,6 +383,7 @@
             // toolTip
             // 
             this.toolTip.BackColor = System.Drawing.Color.FromArgb( ( (int) ( ( (byte) ( 192 ) ) ) ), ( (int) ( ( (byte) ( 255 ) ) ) ), ( (int) ( ( (byte) ( 192 ) ) ) ) );
+            this.toolTip.ToolTipTitle = "Hint:";
             // 
             // MainForm
             // 

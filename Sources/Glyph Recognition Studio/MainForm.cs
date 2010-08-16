@@ -38,6 +38,10 @@ namespace GlyphRecognitionStudio
 
         private ImageList glyphsImageList = new ImageList( );
 
+        #region Configuration Option Names
+        private const string activaDatabaseOption = "ActiveDatabase";
+        #endregion
+
         // Class constructor
         public MainForm( )
         {
@@ -62,13 +66,17 @@ namespace GlyphRecognitionStudio
             if ( config.Load( glyphDatabases ) )
             {
                 RefreshListOfGlyphDatabases( );
+                ActivateGlyphDatabase( config.GetConfigurationOption( activaDatabaseOption ) );
             }
         }
 
         // On closing of the main form
         private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
         {
-            Configuration.Instance.Save( glyphDatabases );
+            Configuration config = Configuration.Instance;
+
+            config.SetConfigurationOption( activaDatabaseOption, activeGlyphDatabaseName );
+            config.Save( glyphDatabases );
 
             if ( videoSourcePlayer.VideoSource != null )
             {
@@ -336,8 +344,6 @@ namespace GlyphRecognitionStudio
                     Font font = new Font( lvi.Font, FontStyle.Regular );
                     lvi.Font = font;
                 }
-
-                glyphsImageList.Images.Clear( );
             }
 
             // activate new database
@@ -345,16 +351,27 @@ namespace GlyphRecognitionStudio
 
             if ( name != null )
             {
-                activeGlyphDatabase = glyphDatabases[name];
-
-                lvi = GetListViewItemByName( glyphCollectionsList, name );
-
-                if ( lvi != null )
+                try
                 {
-                    Font font = new Font( lvi.Font, FontStyle.Bold );
-                    lvi.Font = font;
+                    activeGlyphDatabase = glyphDatabases[name];
+
+                    lvi = GetListViewItemByName( glyphCollectionsList, name );
+
+                    if ( lvi != null )
+                    {
+                        Font font = new Font( lvi.Font, FontStyle.Bold );
+                        lvi.Font = font;
+                    }
+                }
+                catch
+                {
                 }
             }
+            else
+            {
+                activeGlyphDatabase = null;
+            }
+
             RefreshListOfGlyps( );
         }
 

@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Glyph Recognition Studio
+// http://www.aforgenet.com/projects/gratf/
+//
+// Copyright © Andrew Kirillov, 2010
+// andrew.kirillov@aforgenet.com
+//
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -11,6 +18,9 @@ namespace GlyphRecognitionStudio
     {
         private static Configuration singleton = null;
 
+        // list of configuration options
+        private Dictionary<string, string> options = new Dictionary<string, string>( );
+
         private const string baseConfigFileName = "glyph recognition studio.cfg";
         private string configFileName = null;
         bool isSuccessfullyLoaded = false;
@@ -18,6 +28,7 @@ namespace GlyphRecognitionStudio
         #region XML Tag Names
         private const string mainTag = "GlyphRecognitionStudio";
         private const string glyphDatabasesTag = "GlyphDatabases";
+        private const string optionsTag = "Options";
         #endregion
 
         // Configuration load status
@@ -47,6 +58,25 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Set configuration option's value to store
+        public void SetConfigurationOption( string option, string value )
+        {
+            if ( options.ContainsKey( option ) )
+            {
+                options[option] = value;
+            }
+            else
+            {
+                options.Add( option, value );
+            }
+        }
+
+        // Get value of configuration option
+        public string GetConfigurationOption( string option )
+        {
+            return ( options.ContainsKey( option ) ) ? options[option] : null;
+        }
+
         // Save application's configuration
         public void Save( GlyphDatabases dbs )
         {
@@ -68,6 +98,11 @@ namespace GlyphRecognitionStudio
 
                     // main node
                     xmlOut.WriteStartElement( mainTag );
+
+                    // save configuration options
+                    xmlOut.WriteStartElement( optionsTag );
+                    SaveOptions( xmlOut );
+                    xmlOut.WriteEndElement( );
 
                     // save glyph databases
                     xmlOut.WriteStartElement( glyphDatabasesTag );
@@ -134,6 +169,10 @@ namespace GlyphRecognitionStudio
                                 case glyphDatabasesTag:
                                     dbs.Load( xmlIn );
                                     break;
+
+                                case optionsTag:
+                                    LoadOptions( xmlIn );
+                                    break;
                             }
 
                             // read to the next node, if loader did not move any further
@@ -158,6 +197,47 @@ namespace GlyphRecognitionStudio
             }
 
             return isSuccessfullyLoaded;
+        }
+
+        // Save configuration options
+        private void SaveOptions( XmlTextWriter xmlOut )
+        {
+            foreach ( KeyValuePair<string, string> kvp in options )
+            {
+                xmlOut.WriteStartElement( kvp.Key );
+                xmlOut.WriteString( kvp.Value );
+                xmlOut.WriteEndElement( );
+            }
+        }
+
+        // Load configuration options
+        private void LoadOptions( XmlTextReader xmlIn )
+        {
+            options.Clear( );
+            // read to the first node
+            xmlIn.Read( );
+
+            int startingDept = xmlIn.Depth;
+
+            while ( ( xmlIn.NodeType == XmlNodeType.Element ) && ( xmlIn.Depth == startingDept ) )
+            {
+                string option = xmlIn.Name;
+                string value = null;
+
+                if ( !xmlIn.IsEmptyElement )
+                {
+                    // read to the content
+                    xmlIn.Read( );
+                    // read content as string
+                    value = xmlIn.ReadString( );
+
+                    // add the value to options list
+                    options.Add( option, value );
+                }
+
+                // read to the next option
+                xmlIn.Read( );
+            }
         }
     }
 }
