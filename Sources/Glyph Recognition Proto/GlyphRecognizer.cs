@@ -131,8 +131,8 @@ namespace GlyphRecognitionProto
                     corners[0], corners[1], corners[2], corners[3] ) );
 
                 // 6 - do quadrilateral transformation
-                QuadrilateralTransformationBilinear quadrilateralTransformation =
-                    new QuadrilateralTransformationBilinear( corners, 250, 250 );
+                QuadrilateralTransformation quadrilateralTransformation =
+                    new QuadrilateralTransformation( corners, 250, 250 );
 
                 Bitmap transformed = quadrilateralTransformation.Apply( grayImage );
 
