@@ -40,6 +40,12 @@ namespace GlyphRecognitionStudio
 
         #region Configuration Option Names
         private const string activaDatabaseOption = "ActiveDatabase";
+        private const string mainFormXOption = "MainFormX";
+        private const string mainFormYOption = "MainFormY";
+        private const string mainFormWidthOption = "MainFormWidth";
+        private const string mainFormHeightOption = "MainFormHeight";
+        private const string mainFormStateOption = "MainFormState";
+        private const string mainSplitterOption = "MainSplitter";
         #endregion
 
         // Class constructor
@@ -67,6 +73,25 @@ namespace GlyphRecognitionStudio
             {
                 RefreshListOfGlyphDatabases( );
                 ActivateGlyphDatabase( config.GetConfigurationOption( activaDatabaseOption ) );
+
+                try
+                {
+                    Location = new Point(
+                        int.Parse( config.GetConfigurationOption( mainFormXOption ) ),
+                        int.Parse( config.GetConfigurationOption( mainFormYOption ) ) );
+
+                    Size = new Size(
+                        int.Parse( config.GetConfigurationOption( mainFormWidthOption ) ),
+                        int.Parse( config.GetConfigurationOption( mainFormHeightOption ) ) );
+
+                    WindowState = (FormWindowState) Enum.Parse( typeof( FormWindowState ),
+                        config.GetConfigurationOption( mainFormStateOption ) );
+
+                    splitContainer.SplitterDistance = int.Parse( config.GetConfigurationOption( mainSplitterOption ) );
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -74,6 +99,19 @@ namespace GlyphRecognitionStudio
         private void MainForm_FormClosing( object sender, FormClosingEventArgs e )
         {
             Configuration config = Configuration.Instance;
+
+            if ( WindowState != FormWindowState.Minimized )
+            {
+                if ( WindowState != FormWindowState.Maximized )
+                {
+                    config.SetConfigurationOption( mainFormXOption, Location.X.ToString( ) );
+                    config.SetConfigurationOption( mainFormYOption, Location.Y.ToString( ) );
+                    config.SetConfigurationOption( mainFormWidthOption, Width.ToString( ) );
+                    config.SetConfigurationOption( mainFormHeightOption, Height.ToString( ) );
+                }
+                config.SetConfigurationOption( mainFormStateOption, WindowState.ToString( ) );
+                config.SetConfigurationOption( mainSplitterOption, splitContainer.SplitterDistance.ToString( ) );
+            }
 
             config.SetConfigurationOption( activaDatabaseOption, activeGlyphDatabaseName );
             config.Save( glyphDatabases );
