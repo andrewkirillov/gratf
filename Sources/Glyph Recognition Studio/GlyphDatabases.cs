@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Xml;
+using System.Drawing;
 
 using AForge.Vision.GlyphRecognition;
 
@@ -31,6 +32,8 @@ namespace GlyphRecognitionStudio
         private const string sizeAttr = "size";
         private const string dataAttr = "data";
         private const string countAttr = "count";
+        private const string colorAttr = "color";
+        private const string iconAttr = "icon";
         #endregion
 
         public void AddGlyphDatabase( string name, GlyphDatabase db )
@@ -68,6 +71,16 @@ namespace GlyphRecognitionStudio
                     xmlOut.WriteStartElement( glyphTag );
                     xmlOut.WriteAttributeString( nameAttr, glyph.Name );
                     xmlOut.WriteAttributeString( dataAttr, GlyphDataToString( glyph.Data ) );
+
+                    if ( glyph.UserData != null )
+                    {
+                        GlyphVisualizationData visualization = (GlyphVisualizationData) glyph.UserData;
+
+                        xmlOut.WriteAttributeString( colorAttr, string.Format( "{0},{1},{2}",
+                            visualization.Color.R, visualization.Color.G, visualization.Color.B ) );
+                        xmlOut.WriteAttributeString( iconAttr, visualization.ImageName );
+                    }
+
                     xmlOut.WriteEndElement( );
                 }
 
@@ -106,6 +119,22 @@ namespace GlyphRecognitionStudio
                         // create new glyph and add it database
                         Glyph glyph = new Glyph( glyphName, GlyphDataFromString( glyphStrData, size ) );
                         db.Add( glyph );
+
+                        // read visualization params
+                        GlyphVisualizationData visualization = new GlyphVisualizationData( Color.Red );
+
+                        visualization.ImageName = xmlIn.GetAttribute( iconAttr );
+                        string colorStr = xmlIn.GetAttribute( colorAttr );
+
+                        if ( colorStr != null )
+                        {
+                            string[] rgbStr = colorStr.Split( ',' );
+
+                            visualization.Color = Color.FromArgb(
+                                int.Parse( rgbStr[0] ), int.Parse( rgbStr[1] ), int.Parse( rgbStr[2] ) );
+                        }
+
+                        glyph.UserData = visualization;
                     }
 
                     // read to the end tag

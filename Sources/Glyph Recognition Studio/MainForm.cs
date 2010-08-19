@@ -59,6 +59,10 @@ namespace GlyphRecognitionStudio
 
             glyphsImageList.ImageSize = new Size( 32, 32 );
             glyphList.LargeImageList = glyphsImageList;
+
+            bordersToolStripMenuItem.Tag = VisualizationType.BorderOnly;
+            namesToolStripMenuItem.Tag   = VisualizationType.Name;
+            imagesToolStripMenuItem.Tag  = VisualizationType.Image;
         }
 
         // On File->Exit menu item click
@@ -293,8 +297,19 @@ namespace GlyphRecognitionStudio
             }
         }
 
-        // Edit selected glyph
+        // Double click in glyphs' list
+        private void glyphList_MouseDoubleClick( object sender, MouseEventArgs e )
+        {
+            EditSelectedGlyph( );
+        }
+
+        // "Edit" glyph from context menu
         private void editGlyphToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            EditSelectedGlyph( );
+        }
+
+        private void EditSelectedGlyph( )
         {
             if ( ( activeGlyphDatabase != null ) && ( glyphList.SelectedIndices.Count != 0 ) )
             {
@@ -526,5 +541,24 @@ namespace GlyphRecognitionStudio
                 }
             }
         }
+
+        private void visualizationTypeMenuItem_Click( object sender, EventArgs e )
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem) sender;
+
+            if ( item.Tag is VisualizationType )
+            {
+                imageProcessor.VisualizationType = (VisualizationType) item.Tag;
+            }
+        }
+
+        private void visualizationTypeToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
+        {
+            bordersToolStripMenuItem.Checked = ( imageProcessor.VisualizationType == VisualizationType.BorderOnly );
+            namesToolStripMenuItem.Checked   = ( imageProcessor.VisualizationType == VisualizationType.Name );
+            imagesToolStripMenuItem.Checked  = ( imageProcessor.VisualizationType == VisualizationType.Image );
+
+        }
+
     }
 }

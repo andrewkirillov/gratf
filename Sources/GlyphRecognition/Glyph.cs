@@ -6,9 +6,8 @@ namespace AForge.Vision.GlyphRecognition
     public class Glyph : ICloneable
     {
         private string name;
-
         private byte[,] data;
-
+        private object userData;
 
         public string Name
         {
@@ -27,6 +26,12 @@ namespace AForge.Vision.GlyphRecognition
             set { data = value; }
         }
 
+        public object UserData
+        {
+            get { return userData; }
+            set { userData = value; }
+        }
+
         public Glyph( string name, int size )
         {
             this.name = name;
@@ -41,15 +46,19 @@ namespace AForge.Vision.GlyphRecognition
 
         public object Clone( )
         {
-            return new Glyph( name, (byte[,]) data.Clone( ) );
+            Glyph clone = new Glyph( name, (byte[,]) data.Clone( ) );
+
+            clone.userData = userData;
+
+            return clone;
         }
 
-        public bool CheckForMatching( byte[,] rawGlyphData )
+        public int CheckForMatching( byte[,] rawGlyphData )
         {
             int size = rawGlyphData.GetLength( 0 );
 
             if ( size != data.GetLength( 0 ) )
-                return false;
+                return -1;
 
             int sizeM1 = size - 1;
 
@@ -75,7 +84,16 @@ namespace AForge.Vision.GlyphRecognition
                 }
             }
 
-            return ( match1 || match2 || match3 || match4 );
+            if ( match1 )
+                return 0;
+            else if ( match2 )
+                return 180;
+            else if ( match3 )
+                return 90;
+            else if ( match4 )
+                return 270;
+
+            return -1;
         }
     }
 }

@@ -18,21 +18,26 @@ namespace GlyphRecognitionStudio
 {
     public partial class EditGlyphForm : Form
     {
-        private Glyph originalGlyph;
-        private Glyph glyphToEdit;
+        private Glyph glyph;
+        private GlyphVisualizationData visualizationData;
         private List<string> forbiddenNames;
 
         public EditGlyphForm( Glyph glyph, List<string> existingNames )
         {
             InitializeComponent( );
 
-            originalGlyph = glyph;
-            glyphToEdit   = (Glyph) glyph.Clone( );
+            this.glyph = glyph;
+            if ( glyph.UserData == null )
+                glyph.UserData = new GlyphVisualizationData( Color.Red );
+            visualizationData = (GlyphVisualizationData) glyph.UserData;
 
             forbiddenNames = existingNames;
 
-            glyphEditor.SetGlyph( glyphToEdit );
-            nameBox.Text = glyphToEdit.Name;
+            // show information about the glyph
+            glyphEditor.GlyphData = (byte[,]) glyph.Data.Clone( );
+            nameBox.Text = glyph.Name;
+            colorButton.BackColor = visualizationData.Color;
+            UpdateGlyphIcon( );
         }
 
         // On glyph's name editing
@@ -47,7 +52,7 @@ namespace GlyphRecognitionStudio
                 errorProvider.SetError( nameBox, "Glyph name can not be empty" );
                 return;
             }
-            else if ( ( name != originalGlyph.Name ) && ( forbiddenNames.IndexOf( name ) != -1 ) )
+            else if ( ( name != glyph.Name ) && ( forbiddenNames.IndexOf( name ) != -1 ) )
             {
                 errorProvider.SetError( nameBox, "A glyph with such name already exists" );
                 return;
@@ -60,8 +65,47 @@ namespace GlyphRecognitionStudio
         // On button "OK" click
         private void okButton_Click( object sender, EventArgs e )
         {
-            originalGlyph.Name = nameBox.Text.Trim( );
-            originalGlyph.Data = glyphToEdit.Data;
+            glyph.Name = nameBox.Text.Trim( );
+            glyph.Data = glyph.Data;
+            glyph.UserData = visualizationData;
         }
+
+        // Select color for glyph highlight
+        private void colorButton_Click( object sender, EventArgs e )
+        {
+            colorDialog.Color = visualizationData.Color;
+
+            if ( colorDialog.ShowDialog( ) == DialogResult.OK )
+            {
+                visualizationData.Color = colorDialog.Color;
+                colorButton.BackColor = visualizationData.Color;
+            }
+        }
+
+        private void pictureBox_Click( object sender, EventArgs e )
+        {
+            ImageSelectorForm form = new ImageSelectorForm( );
+
+            form.ImageName = visualizationData.ImageName;
+
+            if ( form.ShowDialog( ) == DialogResult.OK )
+            {
+                visualizationData.ImageName = form.ImageName;
+                UpdateGlyphIcon( );
+            }
+        }
+
+        private void UpdateGlyphIcon( )
+        {
+            if ( visualizationData.ImageName == null )
+            {
+                pictureBox.Image = null;
+            }
+            else
+            {
+                pictureBox.Image = EmbeddedImageCollection.Instance.GetImage( visualizationData.ImageName );
+            }
+        }
+
     }
 }

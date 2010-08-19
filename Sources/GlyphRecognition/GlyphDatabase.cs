@@ -92,14 +92,15 @@ namespace AForge.Vision.GlyphRecognition
             return new List<string>( glyphs.Keys ); ;
         }
 
-        public Glyph RecognizeGlyph( byte[,] rawGlyphData )
+        public Glyph RecognizeGlyph( byte[,] rawGlyphData, out int rotation )
         {
             foreach ( KeyValuePair<string, Glyph> pair in glyphs )
             {
-                if ( pair.Value.CheckForMatching( rawGlyphData ) )
+                if ( ( rotation = pair.Value.CheckForMatching( rawGlyphData ) ) != -1 )
                     return pair.Value;
             }
 
+            rotation = -1;
             return null;
         }
     }

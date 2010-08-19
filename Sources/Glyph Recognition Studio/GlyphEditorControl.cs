@@ -10,9 +10,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-
-using AForge.Vision.GlyphRecognition;
-
 namespace GlyphRecognitionStudio
 {
     public partial class GlyphEditorControl : Control
@@ -23,10 +20,27 @@ namespace GlyphRecognitionStudio
         private Brush blackBrush = new SolidBrush( Color.Black );
 
         // glyph to edit
-        private Glyph glyph = null;
+        private byte[,] glyph = null;
 
         // enable/disable of editing border (false const for now)
         private const bool disableEditingBorders = true;
+
+        // Set/glyph to edit
+        public byte[,] GlyphData
+        {
+            get { return glyph; }
+            set
+            {
+                if ( value != null )
+                {
+                    if ( value.GetLength( 0 ) != value.GetLength( 1 ) )
+                        throw new ApplicationException( "Glyph data should be represented by square 2D array" );
+                }
+
+                this.glyph = value;
+                Invalidate( );
+            }
+        }
 
         public GlyphEditorControl( )
         {
@@ -74,13 +88,6 @@ namespace GlyphRecognitionStudio
             base.Dispose( disposing );
         }
 
-        // Set glyph to edit
-        public void SetGlyph( Glyph glyph )
-        {
-            this.glyph = glyph;
-            Invalidate( );
-        }
-
         // Paint the control
         protected override void OnPaint( PaintEventArgs pe )
         {
@@ -95,8 +102,8 @@ namespace GlyphRecognitionStudio
             }
             else
             {
-                int size = glyph.Size;
-                int cellWidth  = clientWidth / size;
+                int size = glyph.GetLength( 0 );
+                int cellWidth  = clientWidth  / size;
                 int cellHeight = clientHeight / size;
 
                 // paint each cell
@@ -104,7 +111,7 @@ namespace GlyphRecognitionStudio
                 {
                     for ( int j = 0; j < size; j++ )
                     {
-                        g.FillRectangle( ( glyph.Data[i, j] == 0 ) ? blackBrush : whiteBrush,
+                        g.FillRectangle( ( glyph[i, j] == 0 ) ? blackBrush : whiteBrush,
                             j * cellWidth, i * cellHeight, cellWidth, cellHeight );
                         g.DrawRectangle( grayPen, j * cellWidth, i * cellHeight, cellWidth - 1, cellHeight - 1 );
                     }
@@ -115,9 +122,9 @@ namespace GlyphRecognitionStudio
         // Handle mouse click event
         private void GlyphEditorControl_MouseClick( object sender, MouseEventArgs e )
         {
-            if ( e.Button == MouseButtons.Left )
+            if ( ( e.Button == MouseButtons.Left ) && ( glyph != null ) )
             {
-                int size = glyph.Size;
+                int size = glyph.GetLength( 0 );
                 int cellWidth  = ClientRectangle.Width / size;
                 int cellHeight = ClientRectangle.Height / size;
 
@@ -133,7 +140,7 @@ namespace GlyphRecognitionStudio
                     }
                     else
                     {
-                        glyph.Data[cellY, cellX] ^= 1;
+                        glyph[cellY, cellX] ^= 1;
                         Invalidate( );
                     }
                 }

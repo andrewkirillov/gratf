@@ -72,11 +72,19 @@
     <Compile Include="EditGlyphForm.Designer.cs">
       <DependentUpon>EditGlyphForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="EmbeddedImageCollection.cs" />
     <Compile Include="GlyphDatabases.cs" />
     <Compile Include="GlyphEditorControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GlyphImageProcessor.cs" />
+    <Compile Include="GlyphVisualizationData.cs" />
+    <Compile Include="ImageSelectorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageSelectorForm.Designer.cs">
+      <DependentUpon>ImageSelectorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,12 +139,23 @@
     <Compile Include="VideoCaptureDeviceForm.Designer.cs">
       <DependentUpon>VideoCaptureDeviceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="VisualizationType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GlyphRecognition\GlyphRecognition.csproj">
       <Project>{0998FAFD-4C8F-4C04-A5CC-03B856C804AD}</Project>
       <Name>GlyphRecognition</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ImageSelectorForm.resx">
+      <DependentUpon>ImageSelectorForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Elephant.png" />
+    <EmbeddedResource Include="Images\Fish.png" />
+    <EmbeddedResource Include="Images\Fly.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

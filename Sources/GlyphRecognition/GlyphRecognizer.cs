@@ -177,7 +177,6 @@ namespace AForge.Vision.GlyphRecognition
             }
             edgesImage.Dispose( );
 
-            System.Diagnostics.Debug.WriteLine( extractedGlyphs.Count );
 
             return extractedGlyphs;
         }
@@ -206,7 +205,27 @@ namespace AForge.Vision.GlyphRecognition
 
                     if ( glyphDatabase != null )
                     {
-                        foundGlyph.RecognizedGlyph = glyphDatabase.RecognizeGlyph( glyphValues );
+                        int rotation;
+
+                        foundGlyph.RecognizedGlyph = glyphDatabase.RecognizeGlyph( glyphValues, out rotation );
+
+                        if ( rotation != -1 )
+                        {
+                            foundGlyph.RecognizedQuadrilateral = foundGlyph.Quadrilateral;
+
+                            while ( rotation > 0 )
+                            {
+
+                                foundGlyph.RecognizedQuadrilateral.Add( foundGlyph.RecognizedQuadrilateral[0] );
+                                foundGlyph.RecognizedQuadrilateral.RemoveAt( 0 );
+
+                                /*foundGlyph.RecognizedQuadrilateral.Insert( 0, foundGlyph.RecognizedQuadrilateral[3] );
+                                foundGlyph.RecognizedQuadrilateral.RemoveAt( 4 );*/
+
+
+                                rotation -= 90;
+                            }
+                        }
                     }
 
                     return foundGlyph;

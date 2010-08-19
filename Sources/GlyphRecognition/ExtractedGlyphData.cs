@@ -13,6 +13,7 @@ namespace AForge.Vision.GlyphRecognition
         public readonly float Confidence;
 
         public Glyph RecognizedGlyph;
+        public List<IntPoint> RecognizedQuadrilateral;
 
         public ExtractedGlyphData( List<IntPoint> quadrilateral, byte[,] rawData, float confidence )
         {
