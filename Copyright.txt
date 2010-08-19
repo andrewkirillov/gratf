@@ -1,0 +1,11 @@
+Glyph Recognition And Tracking Framework
+http://www.aforgenet.com/projects/gratf
+=======================================
+
+Copyright © AForge.NET, 2010
+contacts@aforgenet.com
+
+Open source framework for recognition and tracking of square
+binary glyphs.
+
+Please, contact project owners for any offers, remarks, ideas, etc.

@@ -118,14 +118,6 @@ namespace GlyphRecognitionProto
             foreach ( List<IntPoint> corners in foundObjects )
             {
                 log.AddMessage( "Glyph #" + counter );
-
-                // make sure "left" or "righ" side is not horizontal
-                if ( ( corners[0].Y == corners[3].Y ) || ( corners[1].Y == corners[2].Y ) )
-                {
-                    IntPoint t = corners[0];
-                    corners.RemoveAt( 0 );
-                    corners.Add( t );
-                }
                 
                 log.AddMessage( string.Format( "Corners: ({0}), ({1}), ({2}), ({3})",
                     corners[0], corners[1], corners[2], corners[3] ) );

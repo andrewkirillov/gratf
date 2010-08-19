@@ -62,6 +62,19 @@ namespace AForge.Vision.GlyphRecognition
             glyphs.Remove( name );
         }
 
+        public void Replace( string name, Glyph newGlyph )
+        {
+            if ( name == newGlyph.Name )
+            {
+                glyphs[name] = newGlyph;
+            }
+            else
+            {
+                Remove( name );
+                Add( newGlyph );
+            }
+        }
+
         public void Rename( string name, string newName )
         {
             if ( name == newName )

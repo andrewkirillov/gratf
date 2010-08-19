@@ -38,8 +38,12 @@ namespace GlyphRecognitionStudio
 
         private ImageList glyphsImageList = new ImageList( );
 
+
+        private GlyphImageProcessor imageProcessor = new GlyphImageProcessor( );
+        private string glyphProcessingSynch = "!";
+
         #region Configuration Option Names
-        private const string activaDatabaseOption = "ActiveDatabase";
+        private const string activeDatabaseOption = "ActiveDatabase";
         private const string mainFormXOption = "MainFormX";
         private const string mainFormYOption = "MainFormY";
         private const string mainFormWidthOption = "MainFormWidth";
@@ -72,7 +76,7 @@ namespace GlyphRecognitionStudio
             if ( config.Load( glyphDatabases ) )
             {
                 RefreshListOfGlyphDatabases( );
-                ActivateGlyphDatabase( config.GetConfigurationOption( activaDatabaseOption ) );
+                ActivateGlyphDatabase( config.GetConfigurationOption( activeDatabaseOption ) );
 
                 try
                 {
@@ -113,7 +117,7 @@ namespace GlyphRecognitionStudio
                 config.SetConfigurationOption( mainSplitterOption, splitContainer.SplitterDistance.ToString( ) );
             }
 
-            config.SetConfigurationOption( activaDatabaseOption, activeGlyphDatabaseName );
+            config.SetConfigurationOption( activeDatabaseOption, activeGlyphDatabaseName );
             config.Save( glyphDatabases );
 
             if ( videoSourcePlayer.VideoSource != null )
@@ -267,8 +271,11 @@ namespace GlyphRecognitionStudio
                 {
                     try
                     {
-                        // add glyph to active database
-                        activeGlyphDatabase.Add( glyph );
+                        lock ( glyphProcessingSynch )
+                        {
+                            // add glyph to active database
+                            activeGlyphDatabase.Add( glyph );
+                        }
 
                         // create an icon for it
                         glyphsImageList.Images.Add( glyph.Name, CreateIconForGlyph( glyph ) );
@@ -293,7 +300,7 @@ namespace GlyphRecognitionStudio
             {
                 // get selected item and it glyph ...
                 ListViewItem lvi = glyphList.SelectedItems[0];
-                Glyph glyph = activeGlyphDatabase[lvi.Text];
+                Glyph glyph = (Glyph) activeGlyphDatabase[lvi.Text].Clone( );
                 string glyphOldName = glyph.Name;
                 // ... and pass it the glyph editting form
                 EditGlyphForm glyphForm = new EditGlyphForm( glyph, activeGlyphDatabase.GetGlyphNames( ) );
@@ -303,8 +310,12 @@ namespace GlyphRecognitionStudio
                 {
                     try
                     {
-                        // update glyph's name in the database and list
-                        activeGlyphDatabase.Rename( glyphOldName, glyph.Name );
+                        // replace glyph in the database
+                        lock ( glyphProcessingSynch )
+                        {
+                            activeGlyphDatabase.Replace( glyphOldName, glyph );
+                        }
+
                         lvi.Text = glyph.Name;
 
                         // temporary remove icon from the list item
@@ -335,7 +346,10 @@ namespace GlyphRecognitionStudio
                 ListViewItem lvi = glyphList.SelectedItems[0];
 
                 // remove glyph from database, from list view and image list
-                activeGlyphDatabase.Remove( lvi.Text );
+                lock ( glyphProcessingSynch )
+                {
+                    activeGlyphDatabase.Remove( lvi.Text );
+                }
                 glyphList.Items.Remove( lvi );
                 glyphsImageList.Images.RemoveByKey( lvi.Text );
             }
@@ -496,6 +510,18 @@ namespace GlyphRecognitionStudio
             }
 
             return bitmap;
+        }
+
+        // On new video frame
+        private void videoSourcePlayer_NewFrame( object sender, ref Bitmap image )
+        {
+            if ( activeGlyphDatabase != null )
+            {
+                lock ( glyphProcessingSynch )
+                {
+                    imageProcessor.ProcessImage( image );
+                }
+            }
         }
     }
 }
