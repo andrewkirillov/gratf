@@ -17,34 +17,51 @@ namespace GlyphRecognitionStudio
 {
     class GlyphImageProcessor
     {
-        private GlyphDatabase glyphDatabase;
         private GlyphRecognizer recognizer = new GlyphRecognizer( 5 );
 
         public GlyphDatabase GlyphDatabase
         {
-            get { return glyphDatabase; }
+            get { return recognizer.GlyphDatabase; }
             set
             {
-                glyphDatabase = value;
+                lock ( this )
+                {
+                    recognizer.GlyphDatabase = value;
+                }
             }
         }
 
         public void ProcessImage( Bitmap bitmap )
         {
-            List<ExtractedGlyphData> glyphs = recognizer.FindGlyphs( bitmap );
-
-            if ( glyphs.Count > 0 )
+            lock ( this )
             {
-                Graphics g = Graphics.FromImage( bitmap );
+                List<ExtractedGlyphData> glyphs = recognizer.FindGlyphs( bitmap );
 
-                using ( Pen pen = new Pen( Color.Red, 3 ) )
+                if ( glyphs.Count > 0 )
                 {
-                    foreach ( ExtractedGlyphData glyphData in glyphs )
+                    Graphics g = Graphics.FromImage( bitmap );
+
+                    using ( Pen pen = new Pen( Color.Red, 3 ) )
                     {
-                        g.DrawPolygon( pen, ToPointsArray( glyphData.Quadrilateral ) );
+                        using ( Font font = new Font( FontFamily.GenericSerif, 20 ) )
+                        {
+                            using ( Brush brush = new SolidBrush( Color.Red ) )
+                            {
+                                foreach ( ExtractedGlyphData glyphData in glyphs )
+                                {
+                                    g.DrawPolygon( pen, ToPointsArray( glyphData.Quadrilateral ) );
+
+                                    if ( glyphData.RecognizedGlyph != null )
+                                    {
+                                        g.DrawString( glyphData.RecognizedGlyph.Name, font, brush,
+                                            new Point( glyphData.Quadrilateral[0].X, glyphData.Quadrilateral[0].Y ) );
+                                    }
+                                }
+                            }
+                        }
                     }
+                    g.Dispose( );
                 }
-                g.Dispose( );
             }
         }
 

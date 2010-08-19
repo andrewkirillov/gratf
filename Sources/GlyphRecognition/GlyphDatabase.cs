@@ -91,5 +91,16 @@ namespace AForge.Vision.GlyphRecognition
         {
             return new List<string>( glyphs.Keys ); ;
         }
+
+        public Glyph RecognizeGlyph( byte[,] rawGlyphData )
+        {
+            foreach ( KeyValuePair<string, Glyph> pair in glyphs )
+            {
+                if ( pair.Value.CheckForMatching( rawGlyphData ) )
+                    return pair.Value;
+            }
+
+            return null;
+        }
     }
 }

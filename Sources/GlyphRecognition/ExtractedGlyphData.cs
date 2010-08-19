@@ -9,10 +9,12 @@ namespace AForge.Vision.GlyphRecognition
     public class ExtractedGlyphData
     {
         public readonly List<IntPoint> Quadrilateral;
-        public readonly bool[,] RawData;
+        public readonly byte[,] RawData;
         public readonly float Confidence;
 
-        public ExtractedGlyphData( List<IntPoint> quadrilateral, bool[,] rawData, float confidence )
+        public Glyph RecognizedGlyph;
+
+        public ExtractedGlyphData( List<IntPoint> quadrilateral, byte[,] rawData, float confidence )
         {
             Quadrilateral = quadrilateral;
             RawData = rawData;

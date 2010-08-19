@@ -57,11 +57,14 @@ namespace AForge.Vision.GlyphRecognition
             {
                 lock ( this )
                 {
-                    glyphDatabase = value;
-                    if ( glyphDatabase != null )
+                    glyphDatabase = null;
+
+                    if ( value != null )
                     {
-                        GlyphSize = glyphDatabase.Size;
+                        GlyphSize = value.Size;
                     }
+
+                    glyphDatabase = value;
                 }
             }
         }
@@ -191,7 +194,7 @@ namespace AForge.Vision.GlyphRecognition
             // recognize raw glyph
             float confidence;
 
-            bool[,] glyphValues = binaryGlyphRecognizer.Recognize( glyphImage,
+            byte[,] glyphValues = binaryGlyphRecognizer.Recognize( glyphImage,
                 new Rectangle( 0, 0, glyphImage.Width, glyphImage.Height ), out confidence );
 
             if ( confidence >= minConfidenceLevel )
@@ -199,45 +202,51 @@ namespace AForge.Vision.GlyphRecognition
                 if ( ( CheckIfGlyphHasBorder( glyphValues ) ) &&
                      ( CheckIfEveryRowColumnHasValue( glyphValues ) ) ) 
                 {
-                    return new ExtractedGlyphData( quadrilateral, glyphValues, confidence );
+                    ExtractedGlyphData foundGlyph = new ExtractedGlyphData( quadrilateral, glyphValues, confidence );
+
+                    if ( glyphDatabase != null )
+                    {
+                        foundGlyph.RecognizedGlyph = glyphDatabase.RecognizeGlyph( glyphValues );
+                    }
+
+                    return foundGlyph;
                 }
             }
 
             return null;
         }
 
-        private bool CheckIfGlyphHasBorder( bool[,] rawGlyphData )
+        private bool CheckIfGlyphHasBorder( byte[,] rawGlyphData )
         {
             int sizeM1 = rawGlyphData.GetLength( 0 ) - 1;
 
             for ( int i = 0; i <= sizeM1; i++ )
             {
-                if ( rawGlyphData[0, i] )
+                if ( rawGlyphData[0, i] == 1 )
                     return false;
-                if ( rawGlyphData[sizeM1, i] )
-                    return false;
-
-                if ( rawGlyphData[i, 0] )
-                    return false;
-                if ( rawGlyphData[i, sizeM1] )
+                if ( rawGlyphData[sizeM1, i] == 1 )
                     return false;
 
+                if ( rawGlyphData[i, 0] == 1)
+                    return false;
+                if ( rawGlyphData[i, sizeM1] == 1 )
+                    return false;
             }
 
             return true;
         }
 
-        private bool CheckIfEveryRowColumnHasValue( bool[,] rawGlyphData )
+        private bool CheckIfEveryRowColumnHasValue( byte[,] rawGlyphData )
         {
             int sizeM1 = rawGlyphData.GetLength( 0 ) - 1;
-            bool[] rows = new bool[sizeM1];
-            bool[] cols = new bool[sizeM1];
+            byte[] rows = new byte[sizeM1];
+            byte[] cols = new byte[sizeM1];
 
             for ( int i = 1; i < sizeM1; i++ )
             {
                 for ( int j = 1; j < sizeM1; j++ )
                 {
-                    bool value = rawGlyphData[i, j];
+                    byte value = rawGlyphData[i, j];
 
                     rows[i] |= value;
                     cols[j] |= value;
@@ -246,7 +255,7 @@ namespace AForge.Vision.GlyphRecognition
 
             for ( int i = 1; i < sizeM1; i++ )
             {
-                if ( ( !rows[i] ) || ( !cols[i] ) )
+                if ( ( rows[i] == 0 ) || ( cols[i] == 0 ) )
                     return false;
             }
 

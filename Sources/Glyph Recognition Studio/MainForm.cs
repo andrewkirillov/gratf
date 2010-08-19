@@ -424,6 +424,9 @@ namespace GlyphRecognitionStudio
                 activeGlyphDatabase = null;
             }
 
+            // set the database to image processor ...
+            imageProcessor.GlyphDatabase = activeGlyphDatabase;
+            // ... and show it to user
             RefreshListOfGlyps( );
         }
 

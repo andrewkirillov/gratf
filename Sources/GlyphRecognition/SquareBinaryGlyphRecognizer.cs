@@ -27,7 +27,7 @@ namespace AForge.Vision.GlyphRecognition
         }
 
         // Recognize glyph in managed image
-        public bool[,] Recognize( Bitmap image, Rectangle rect, out float confidence )
+        public byte[,] Recognize( Bitmap image, Rectangle rect, out float confidence )
         {
             BitmapData data = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ),
                 ImageLockMode.ReadWrite, image.PixelFormat );
@@ -43,13 +43,13 @@ namespace AForge.Vision.GlyphRecognition
         }
 
         // Recognize glyph in locked bitmap data
-        public bool[,] Recognize( BitmapData imageData, Rectangle rect, out float confidence )
+        public byte[,] Recognize( BitmapData imageData, Rectangle rect, out float confidence )
         {
             return Recognize( new UnmanagedImage( imageData ), rect, out confidence );
         }
 
         // Recognize glyph in unmanaged image
-        public bool[,] Recognize( UnmanagedImage image, Rectangle rect, out float confidence )
+        public byte[,] Recognize( UnmanagedImage image, Rectangle rect, out float confidence )
         {
             int glyphStartX = rect.Left;
             int glyphStartY = rect.Top;
@@ -109,7 +109,7 @@ namespace AForge.Vision.GlyphRecognition
             }
 
             // calculate value of each glyph's cell and set confidence to minim value
-            bool[,] glyphValues = new bool[glyphSize, glyphSize];
+            byte[,] glyphValues = new byte[glyphSize, glyphSize];
             confidence = 1f;
 
             for ( int gi = 0; gi < glyphSize; gi++ )
@@ -119,7 +119,7 @@ namespace AForge.Vision.GlyphRecognition
                     float fullness = (float) ( cellIntensity[gi, gj] / 255 ) / cellScanArea;
                     float conf = (float) System.Math.Abs( fullness - 0.5 ) + 0.5f;
 
-                    glyphValues[gi, gj] = ( fullness > 0.5f );
+                    glyphValues[gi, gj] = (byte) ( ( fullness > 0.5f ) ? 1 : 0 );
 
                     if ( conf < confidence )
                         confidence = conf;
