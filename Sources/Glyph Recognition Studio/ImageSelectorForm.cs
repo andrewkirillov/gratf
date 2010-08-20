@@ -40,6 +40,7 @@ namespace GlyphRecognitionStudio
         {
             EmbeddedImageCollection imageCollection = EmbeddedImageCollection.Instance;
             ReadOnlyCollection<string> imageNames = imageCollection.GetImageNames( );
+            ListViewItem selectedItem = null;
 
             listView.LargeImageList = imageList;
 
@@ -57,9 +58,13 @@ namespace GlyphRecognitionStudio
                     if ( imageName == selectedImageName )
                     {
                         lvi.Selected = true;
+                        selectedItem = lvi;
                     }
                 }
             }
+
+            if ( selectedItem != null )
+                selectedItem.EnsureVisible( );
         }
 
         // On button "OK" click - get name of selected image
