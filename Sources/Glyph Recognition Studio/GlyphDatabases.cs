@@ -36,6 +36,8 @@ namespace GlyphRecognitionStudio
         private const string iconAttr = "icon";
         #endregion
 
+
+        // Add glyph database to collection
         public void AddGlyphDatabase( string name, GlyphDatabase db )
         {
             if ( !dbs.ContainsKey( name ) )
@@ -48,6 +50,7 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Remove glyph database from collection
         public void RemoveGlyphDatabase( string name )
         {
             if ( dbs.ContainsKey( name ) )
@@ -56,6 +59,13 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Get list of available databases' names
+        public List<string> GetDatabaseNames( )
+        {
+            return new List<string>( dbs.Keys ); ;
+        }
+
+        // Save infromation about all databases and glyphs into XML writer
         public void Save( XmlTextWriter xmlOut )
         {
             foreach ( KeyValuePair<string, GlyphDatabase> kvp in dbs )
@@ -76,8 +86,10 @@ namespace GlyphRecognitionStudio
                     {
                         GlyphVisualizationData visualization = (GlyphVisualizationData) glyph.UserData;
 
+                        // highlight color
                         xmlOut.WriteAttributeString( colorAttr, string.Format( "{0},{1},{2}",
                             visualization.Color.R, visualization.Color.G, visualization.Color.B ) );
+                        // glyph image
                         xmlOut.WriteAttributeString( iconAttr, visualization.ImageName );
                     }
 
@@ -88,6 +100,7 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Load information about databases and glyphs from XML reader
         public void Load( XmlTextReader xmlIn )
         {
             // read to the first node
@@ -145,12 +158,6 @@ namespace GlyphRecognitionStudio
                 xmlIn.Read( );
             }
         }
-
-        public List<string> GetDatabaseNames( )
-        {
-            return new List<string>( dbs.Keys );;
-        }
-
 
         #region Tool Methods
 

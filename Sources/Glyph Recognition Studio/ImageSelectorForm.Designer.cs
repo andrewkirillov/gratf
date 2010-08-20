@@ -35,18 +35,22 @@
             // 
             // listView
             // 
+            this.listView.Anchor = ( (System.Windows.Forms.AnchorStyles) ( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+                        | System.Windows.Forms.AnchorStyles.Left )
+                        | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.listView.HideSelection = false;
             this.listView.Location = new System.Drawing.Point( 10, 10 );
             this.listView.MultiSelect = false;
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size( 279, 201 );
+            this.listView.Size = new System.Drawing.Size( 283, 234 );
             this.listView.TabIndex = 0;
             this.listView.UseCompatibleStateImageBehavior = false;
             // 
             // okButton
             // 
+            this.okButton.Anchor = ( (System.Windows.Forms.AnchorStyles) ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point( 50, 252 );
+            this.okButton.Location = new System.Drawing.Point( 135, 250 );
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size( 75, 23 );
             this.okButton.TabIndex = 1;
@@ -56,8 +60,9 @@
             // 
             // cancelButton
             // 
+            this.cancelButton.Anchor = ( (System.Windows.Forms.AnchorStyles) ( ( System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point( 146, 252 );
+            this.cancelButton.Location = new System.Drawing.Point( 219, 250 );
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size( 75, 23 );
             this.cancelButton.TabIndex = 2;
@@ -70,12 +75,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size( 301, 287 );
+            this.ClientSize = new System.Drawing.Size( 304, 282 );
             this.Controls.Add( this.cancelButton );
             this.Controls.Add( this.okButton );
             this.Controls.Add( this.listView );
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size( 200, 200 );
             this.Name = "ImageSelectorForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

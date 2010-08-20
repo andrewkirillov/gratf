@@ -396,6 +396,25 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Set new visualization method
+        private void visualizationTypeMenuItem_Click( object sender, EventArgs e )
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem) sender;
+
+            if ( item.Tag is VisualizationType )
+            {
+                imageProcessor.VisualizationType = (VisualizationType) item.Tag;
+            }
+        }
+
+        // Update status of glyph visualization menu items, so user can see what is selected
+        private void visualizationTypeToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
+        {
+            bordersToolStripMenuItem.Checked = ( imageProcessor.VisualizationType == VisualizationType.BorderOnly );
+            namesToolStripMenuItem.Checked   = ( imageProcessor.VisualizationType == VisualizationType.Name );
+            imagesToolStripMenuItem.Checked  = ( imageProcessor.VisualizationType == VisualizationType.Image );
+        }
+
         // Activate glyph database with the specified name
         private void ActivateGlyphDatabase( string name )
         {
@@ -541,24 +560,5 @@ namespace GlyphRecognitionStudio
                 }
             }
         }
-
-        private void visualizationTypeMenuItem_Click( object sender, EventArgs e )
-        {
-            ToolStripMenuItem item = (ToolStripMenuItem) sender;
-
-            if ( item.Tag is VisualizationType )
-            {
-                imageProcessor.VisualizationType = (VisualizationType) item.Tag;
-            }
-        }
-
-        private void visualizationTypeToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
-        {
-            bordersToolStripMenuItem.Checked = ( imageProcessor.VisualizationType == VisualizationType.BorderOnly );
-            namesToolStripMenuItem.Checked   = ( imageProcessor.VisualizationType == VisualizationType.Name );
-            imagesToolStripMenuItem.Checked  = ( imageProcessor.VisualizationType == VisualizationType.Image );
-
-        }
-
     }
 }

@@ -87,7 +87,7 @@
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.okButton.Enabled = false;
-            this.okButton.Location = new System.Drawing.Point( 55, 457 );
+            this.okButton.Location = new System.Drawing.Point( 55, 440 );
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size( 75, 23 );
             this.okButton.TabIndex = 3;
@@ -98,7 +98,7 @@
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point( 140, 457 );
+            this.cancelButton.Location = new System.Drawing.Point( 140, 440 );
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size( 75, 23 );
             this.cancelButton.TabIndex = 4;
@@ -117,7 +117,7 @@
             this.groupBox2.Controls.Add( this.label2 );
             this.groupBox2.Location = new System.Drawing.Point( 10, 320 );
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size( 250, 131 );
+            this.groupBox2.Size = new System.Drawing.Size( 250, 100 );
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Visualization";
@@ -126,7 +126,7 @@
             // 
             this.pictureBox.BackColor = System.Drawing.SystemColors.ControlDark;
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox.Location = new System.Drawing.Point( 90, 54 );
+            this.pictureBox.Location = new System.Drawing.Point( 110, 36 );
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size( 50, 50 );
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -137,7 +137,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point( 10, 70 );
+            this.label3.Location = new System.Drawing.Point( 115, 20 );
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size( 39, 13 );
             this.label3.TabIndex = 2;
@@ -145,9 +145,9 @@
             // 
             // colorButton
             // 
-            this.colorButton.Location = new System.Drawing.Point( 90, 25 );
+            this.colorButton.Location = new System.Drawing.Point( 20, 35 );
             this.colorButton.Name = "colorButton";
-            this.colorButton.Size = new System.Drawing.Size( 50, 23 );
+            this.colorButton.Size = new System.Drawing.Size( 50, 50 );
             this.colorButton.TabIndex = 1;
             this.colorButton.UseVisualStyleBackColor = true;
             this.colorButton.Click += new System.EventHandler( this.colorButton_Click );
@@ -155,7 +155,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point( 10, 30 );
+            this.label2.Location = new System.Drawing.Point( 10, 20 );
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size( 78, 13 );
             this.label2.TabIndex = 0;
@@ -167,7 +167,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size( 271, 507 );
+            this.ClientSize = new System.Drawing.Size( 271, 472 );
             this.Controls.Add( this.groupBox2 );
             this.Controls.Add( this.cancelButton );
             this.Controls.Add( this.okButton );

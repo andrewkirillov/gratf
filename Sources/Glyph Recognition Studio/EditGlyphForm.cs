@@ -82,6 +82,7 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Picture box clicked - select image for a glyph
         private void pictureBox_Click( object sender, EventArgs e )
         {
             ImageSelectorForm form = new ImageSelectorForm( );
@@ -95,6 +96,7 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Show image corresponding to the glyph
         private void UpdateGlyphIcon( )
         {
             if ( visualizationData.ImageName == null )
@@ -106,6 +108,5 @@ namespace GlyphRecognitionStudio
                 pictureBox.Image = EmbeddedImageCollection.Instance.GetImage( visualizationData.ImageName );
             }
         }
-
     }
 }
