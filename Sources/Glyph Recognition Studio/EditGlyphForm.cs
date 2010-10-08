@@ -66,7 +66,7 @@ namespace GlyphRecognitionStudio
         private void okButton_Click( object sender, EventArgs e )
         {
             glyph.Name = nameBox.Text.Trim( );
-            glyph.Data = glyph.Data;
+            glyph.Data = glyphEditor.GlyphData;
             glyph.UserData = visualizationData;
         }
 
