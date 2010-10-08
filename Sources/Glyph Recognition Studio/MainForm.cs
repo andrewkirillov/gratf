@@ -421,7 +421,9 @@ namespace GlyphRecognitionStudio
                 }
                 else
                 {
-                    if ( glyphCollectionsList.Items[e.Item].Text != newName )
+                    string oldName = glyphCollectionsList.Items[e.Item].Text;
+
+                    if ( oldName != newName )
                     {
                         if ( glyphDatabases.GetDatabaseNames( ).Contains( newName ) )
                         {
@@ -430,7 +432,21 @@ namespace GlyphRecognitionStudio
                             return;
                         }
 
-                        // .. complete editing ..
+                        glyphDatabases.RenameGlyphDatabase( oldName, newName );
+
+                        // update name of active database if it was renamed
+                        if ( activeGlyphDatabaseName == oldName )
+                            activeGlyphDatabaseName = newName;
+
+                        if ( newName != e.Label )
+                        {
+                            glyphCollectionsList.Items[e.Item].Text = newName;
+                            e.CancelEdit = true;
+                        }
+                    }
+                    else
+                    {
+                        e.CancelEdit = true;
                     }
                 }
             }

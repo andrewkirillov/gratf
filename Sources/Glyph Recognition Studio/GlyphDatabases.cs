@@ -46,7 +46,7 @@ namespace GlyphRecognitionStudio
             }
             else
             {
-                throw new ApplicationException( "A glyph database with such name already exists" );
+                throw new ApplicationException( "A glyph database with such name already exists : " + name );
             }
         }
 
@@ -56,6 +56,28 @@ namespace GlyphRecognitionStudio
             if ( dbs.ContainsKey( name ) )
             {
                 dbs.Remove( name );
+            }
+        }
+
+        // Rename glyph database
+        public void RenameGlyphDatabase( string oldName, string newName )
+        {
+            if ( oldName != newName )
+            {
+                if ( dbs.ContainsKey( newName ) )
+                {
+                    throw new ApplicationException( "A glyph database with such name already exists : " + newName );
+                }
+
+                if ( !dbs.ContainsKey( oldName ) )
+                {
+                    throw new ApplicationException( "A glyph database with such name does not exist : " + oldName );
+                }
+
+                // insert it with new key
+                dbs.Add( newName, dbs[oldName] );
+                // remove it from dictonary with the old key
+                dbs.Remove( oldName );
             }
         }
 
