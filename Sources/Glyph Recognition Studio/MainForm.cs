@@ -38,9 +38,10 @@ namespace GlyphRecognitionStudio
 
         private ImageList glyphsImageList = new ImageList( );
 
-
         private GlyphImageProcessor imageProcessor = new GlyphImageProcessor( );
         private string glyphProcessingSynch = "!";
+
+        private const string ErrorBoxTitle = "Error";
 
         #region Configuration Option Names
         private const string activeDatabaseOption = "ActiveDatabase";
@@ -238,7 +239,7 @@ namespace GlyphRecognitionStudio
                 catch
                 {
                     MessageBox.Show( string.Format( "A glyph database with the name '{0}' already exists", name ),
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                        ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
                 }
             }
         }
@@ -291,7 +292,7 @@ namespace GlyphRecognitionStudio
                     catch
                     {
                         MessageBox.Show( string.Format( "A glyph with the name '{0}' already exists in the database", glyph.Name ),
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                            ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
                     }
                 }
             }
@@ -346,7 +347,7 @@ namespace GlyphRecognitionStudio
                     catch
                     {
                         MessageBox.Show( string.Format( "A glyph with the name '{0}' already exists in the database", glyph.Name ),
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                            ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
                     }
                 }
             }
@@ -393,6 +394,45 @@ namespace GlyphRecognitionStudio
 
                 glyphDatabases.RemoveGlyphDatabase( selecteItem );
                 glyphCollectionsList.Items.Remove( glyphCollectionsList.SelectedItems[0] );
+            }
+        }
+
+        // Rename glyph collection
+        private void renameToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            if ( glyphCollectionsList.SelectedIndices.Count == 1 )
+            {
+                glyphCollectionsList.Items[glyphCollectionsList.SelectedIndices[0]].BeginEdit( );
+            }
+        }
+
+        // On after editing of collect name's label - check if the name is correct
+        private void glyphCollectionsList_AfterLabelEdit( object sender, LabelEditEventArgs e )
+        {
+            if ( e.Label != null )
+            {
+                string newName = e.Label.Trim( );
+
+                if ( newName == string.Empty )
+                {
+                    MessageBox.Show( "Collection name cannot be emtpy", ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    e.CancelEdit = true;
+                    return;
+                }
+                else
+                {
+                    if ( glyphCollectionsList.Items[e.Item].Text != newName )
+                    {
+                        if ( glyphDatabases.GetDatabaseNames( ).Contains( newName ) )
+                        {
+                            MessageBox.Show( "A collection with such name already exists", ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                            e.CancelEdit = true;
+                            return;
+                        }
+
+                        // .. complete editing ..
+                    }
+                }
             }
         }
 

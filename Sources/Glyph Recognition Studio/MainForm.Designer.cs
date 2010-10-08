@@ -151,21 +151,21 @@
             // bordersToolStripMenuItem
             // 
             this.bordersToolStripMenuItem.Name = "bordersToolStripMenuItem";
-            this.bordersToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.bordersToolStripMenuItem.Size = new System.Drawing.Size( 114, 22 );
             this.bordersToolStripMenuItem.Text = "&Borders";
             this.bordersToolStripMenuItem.Click += new System.EventHandler( this.visualizationTypeMenuItem_Click );
             // 
             // namesToolStripMenuItem
             // 
             this.namesToolStripMenuItem.Name = "namesToolStripMenuItem";
-            this.namesToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.namesToolStripMenuItem.Size = new System.Drawing.Size( 114, 22 );
             this.namesToolStripMenuItem.Text = "&Names";
             this.namesToolStripMenuItem.Click += new System.EventHandler( this.visualizationTypeMenuItem_Click );
             // 
             // imagesToolStripMenuItem
             // 
             this.imagesToolStripMenuItem.Name = "imagesToolStripMenuItem";
-            this.imagesToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.imagesToolStripMenuItem.Size = new System.Drawing.Size( 114, 22 );
             this.imagesToolStripMenuItem.Text = "&Images";
             this.imagesToolStripMenuItem.Click += new System.EventHandler( this.visualizationTypeMenuItem_Click );
             // 
@@ -340,6 +340,7 @@
             this.glyphCollectionsList.ContextMenuStrip = this.glyphCollectionsContextMenu;
             this.glyphCollectionsList.FullRowSelect = true;
             this.glyphCollectionsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.glyphCollectionsList.LabelEdit = true;
             this.glyphCollectionsList.Location = new System.Drawing.Point( 5, 20 );
             this.glyphCollectionsList.MultiSelect = false;
             this.glyphCollectionsList.Name = "glyphCollectionsList";
@@ -348,6 +349,7 @@
             this.toolTip.SetToolTip( this.glyphCollectionsList, "Right click for options" );
             this.glyphCollectionsList.UseCompatibleStateImageBehavior = false;
             this.glyphCollectionsList.View = System.Windows.Forms.View.Details;
+            this.glyphCollectionsList.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler( this.glyphCollectionsList_AfterLabelEdit );
             // 
             // nameHeader
             // 
@@ -394,6 +396,7 @@
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
             this.renameToolStripMenuItem.Size = new System.Drawing.Size( 117, 22 );
             this.renameToolStripMenuItem.Text = "&Rename";
+            this.renameToolStripMenuItem.Click += new System.EventHandler( this.renameToolStripMenuItem_Click );
             // 
             // deleteToolStripMenuItem
             // 

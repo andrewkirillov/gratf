@@ -62,7 +62,7 @@ namespace GlyphRecognitionStudio
         // Get list of available databases' names
         public List<string> GetDatabaseNames( )
         {
-            return new List<string>( dbs.Keys ); ;
+            return new List<string>( dbs.Keys );
         }
 
         // Save infromation about all databases and glyphs into XML writer
