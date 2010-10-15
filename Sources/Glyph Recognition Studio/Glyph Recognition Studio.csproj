@@ -12,6 +12,7 @@
     <AssemblyName>Glyph Recognition Studio</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ApplicationIcon>glyph_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -167,6 +168,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Images\Butterfly.png" />
     <EmbeddedResource Include="Images\Clubs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="glyph_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
