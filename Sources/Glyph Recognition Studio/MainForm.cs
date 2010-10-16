@@ -132,6 +132,14 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Show about form
+        private void aboutToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            AboutForm form = new AboutForm( );
+
+            form.ShowDialog( );
+        }
+
         // Open local video capture device
         private void localVideoCaptureDeviceToolStripMenuItem_Click( object sender, EventArgs e )
         {
