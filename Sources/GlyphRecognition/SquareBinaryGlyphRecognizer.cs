@@ -42,12 +42,6 @@ namespace AForge.Vision.GlyphRecognition
             }
         }
 
-        // Recognize glyph in locked bitmap data
-        public byte[,] Recognize( BitmapData imageData, Rectangle rect, out float confidence )
-        {
-            return Recognize( new UnmanagedImage( imageData ), rect, out confidence );
-        }
-
         // Recognize glyph in unmanaged image
         public byte[,] Recognize( UnmanagedImage image, Rectangle rect, out float confidence )
         {

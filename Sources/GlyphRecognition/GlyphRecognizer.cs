@@ -104,11 +104,6 @@ namespace AForge.Vision.GlyphRecognition
             }
         }
 
-        public List<ExtractedGlyphData> FindGlyphs( BitmapData bitmapData )
-        {
-            return FindGlyphs( new UnmanagedImage( bitmapData ) );
-        }
-
         public List<ExtractedGlyphData> FindGlyphs( UnmanagedImage image )
         {
             List<ExtractedGlyphData> extractedGlyphs = new List<ExtractedGlyphData>( );

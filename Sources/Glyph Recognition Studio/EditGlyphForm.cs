@@ -65,9 +65,18 @@ namespace GlyphRecognitionStudio
         // On button "OK" click
         private void okButton_Click( object sender, EventArgs e )
         {
+            if ( Glyph.CheckIfRotationInvariant( glyphEditor.GlyphData ) )
+            {
+                MessageBox.Show( "The glyph is rotation invariant (it looks the same if rotated), so its rotaton will not be recognized.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+
             glyph.Name = nameBox.Text.Trim( );
             glyph.Data = glyphEditor.GlyphData;
             glyph.UserData = visualizationData;
+
+            DialogResult = DialogResult.OK;
+            Close( );
         }
 
         // Select color for glyph highlight

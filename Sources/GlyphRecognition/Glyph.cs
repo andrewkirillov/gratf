@@ -53,6 +53,39 @@ namespace AForge.Vision.GlyphRecognition
             return clone;
         }
 
+        public static bool CheckIfRotationInvariant( byte[,] rawGlyphData )
+        {
+            int size = rawGlyphData.GetLength( 0 );
+
+            if ( size != rawGlyphData.GetLength( 1 ) )
+            {
+                throw new ArgumentException( "Invalid glyph data array; must be square." );
+            }
+
+            int sizeM1 = size - 1;
+
+            bool match2 = true;
+            bool match3 = true;
+            bool match4 = true;
+
+            for ( int i = 0; i < size; i++ )
+            {
+                for ( int j = 0; j < size; j++ )
+                {
+                    byte value = rawGlyphData[i, j];
+
+                    // 180 deg
+                    match2 &= ( value == rawGlyphData[sizeM1 - i, sizeM1 - j] );
+                    // 90 deg
+                    match3 &= ( value == rawGlyphData[sizeM1 - j, i] );
+                    // 270 deg
+                    match4 &= ( value == rawGlyphData[j, sizeM1 - i] );
+                }
+            }
+
+            return ( match2 || match3 || match4 );
+        }
+
         public int CheckForMatching( byte[,] rawGlyphData )
         {
             int size = rawGlyphData.GetLength( 0 );
