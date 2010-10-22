@@ -1,20 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-
-using AForge;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
-using AForge.Math.Geometry;
+﻿// Gliph Recognition Library
+// http://www.aforgenet.com/projects/gratf/
+//
+// Copyright © Andrew Kirillov, 2010
+// andrew.kirillov@aforgenet.com
+//
 
 namespace AForge.Vision.GlyphRecognition
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+
+    using AForge;
+    using AForge.Imaging;
+    using AForge.Imaging.Filters;
+    using AForge.Math.Geometry;
+
+    /// <summary>
+    /// The class locates and recognizes glyphs in a specified image.
+    /// </summary>
+    /// 
     public class GlyphRecognizer
     {
-        private int glyphSize;
-        private GlyphDatabase glyphDatabase;
-
+        // ---> set of image processing routines in use
         private DifferenceEdgeDetector edgeDetector = new DifferenceEdgeDetector( );
         private Threshold thresholdFilter = new Threshold( 40 );
         private BlobCounter blobCounter = new BlobCounter( );
@@ -22,10 +31,31 @@ namespace AForge.Vision.GlyphRecognition
         private QuadrilateralTransformation quadrilateralTransformation = new QuadrilateralTransformation( );
         private OtsuThreshold otsuThresholdFilter = new OtsuThreshold( );
         private SquareBinaryGlyphRecognizer binaryGlyphRecognizer = new SquareBinaryGlyphRecognizer( );
+        // <---
 
-        private float minConfidenceLevel = 0.60f;
+        // size of glyphs to search/recognize
+        private int glyphSize;
+        // database of glyphs to recognize
+        private GlyphDatabase glyphDatabase;
+        // maximum number of glyph to search in single image
         private int maxNumberOfGlyphsToSearch = 3;
+        // mimimum confidance level for extracted raw glyph data
+        private float minConfidenceLevel = 0.60f;
 
+        /// <summary>
+        /// Size of glyph to search and recognize, [5, 23].
+        /// </summary>
+        /// 
+        /// <remarks><para>The property specifies the size of glyphs the instance of the class will be searching for.</para>
+        /// 
+        /// <para><note>Setting of this property is allowed only in the case if <see cref="GlyphDatabase"/> is set
+        /// to <see langword="null"/>. If glyph database is set, then this property is initialized with glyphs' size of the
+        /// database.</note></para>
+        /// </remarks>
+        /// 
+        /// <exception cref="ApplicationException">Glyph size cannot be set if glyph database is set.</exception>
+        /// <exception cref="ArgumentException">Invalid glyph size was specified.</exception>
+        /// 
         public int GlyphSize
         {
             get { return glyphSize; }
@@ -33,12 +63,12 @@ namespace AForge.Vision.GlyphRecognition
             {
                 if ( glyphDatabase != null )
                 {
-                    throw new ApplicationException( "Glyph size cannot be set if glyph database is set" );
+                    throw new ApplicationException( "Glyph size cannot be set if glyph database is set." );
                 }
 
-                if ( ( value < 3 ) || ( value > 23 ) )
+                if ( ( value < 5 ) || ( value > 23 ) )
                 {
-                    throw new ArgumentException( "Invalid glyph size was specified" );
+                    throw new ArgumentException( "Invalid glyph size was specified." );
                 }
 
                 lock ( this )
@@ -50,6 +80,24 @@ namespace AForge.Vision.GlyphRecognition
             }
         }
 
+        /// <summary>
+        /// Database of glyphs to recognize.
+        /// </summary>
+        /// 
+        /// <remarks><para>The property sets database of glyphs, which could be recognized by an instance of the class.
+        /// In the case if glyph recognizer finds some glyphs which are not listed in the database, it will still provide
+        /// information about them, but <see cref="ExtractedGlyphData.RecognizedGlyph">RecognizedGlyph</see> and
+        /// <see cref="ExtractedGlyphData.RecognizedQuadrilateral">RecognizedQuadrilateral</see>
+        /// properties of <see cref="ExtractedGlyphData"/> will not be set.</para>
+        /// 
+        /// <para>Setting this property will also set <see cref="GlyphSize"/> automatically to the glyphs' size specified
+        /// in the database.</para>
+        /// 
+        /// <para><note>If the property is set to <see langword="null"/>, the class will only do searching for glyphs - objects
+        /// which look like a glyph and satisfy certain constaints applicable to a valid glyph. In this case it will
+        /// provide information about all found glyphs - their position and raw data.</note></para>
+        /// </remarks>
+        /// 
         public GlyphDatabase GlyphDatabase
         {
             get { return glyphDatabase; }
@@ -69,6 +117,27 @@ namespace AForge.Vision.GlyphRecognition
             }
         }
 
+        /// <summary>
+        /// Maximum number of glyph to search for in a single image, [1, 10].
+        /// </summary>
+        /// 
+        /// <remarks><para>The property sets maximum number of glyphs to search in a given image. If
+        /// image processing routines finds the specified number of glyphs it will stop further image
+        /// processing even if there are some more data to process is available.</para>
+        /// 
+        /// <para><note>The image processing routine analyzes found objects in size descending order -
+        /// larger objects are analyzed first.</note></para>
+        /// 
+        /// <para>Default value is set to <b>3</b>.</para>
+        /// </remarks>
+        /// 
+        public int MaxNumberOfGlyphsToSearch
+        {
+            get { return maxNumberOfGlyphsToSearch; }
+            set { maxNumberOfGlyphsToSearch = Math.Max( 1, Math.Min( 10, value ) ); }
+        }
+
+        // Private constructor
         private GlyphRecognizer( )
         {
             blobCounter.MinHeight    = 32;
@@ -79,16 +148,46 @@ namespace AForge.Vision.GlyphRecognition
             quadrilateralTransformation.AutomaticSizeCalculaton = false;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GlyphRecognizer"/> class.
+        /// </summary>
+        /// 
+        /// <param name="glyphSize"><see cref="GlyphSize">Size</see> of glyphs to search for and recognize.</param>
+        /// 
         public GlyphRecognizer( int glyphSize ) : this( )
         {
             GlyphSize = glyphSize;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GlyphRecognizer"/> class.
+        /// </summary>
+        /// 
+        /// <param name="glyphDatabase"><see cref="GlyphRecognizer">Database of glyphs</see> to recognize.</param>
+        /// 
         public GlyphRecognizer( GlyphDatabase glyphDatabase ) : this( )
         {
             GlyphDatabase = glyphDatabase;
         }
 
+        /// <summary>
+        /// Search for glyphs in the specified image and recognize them.
+        /// </summary>
+        /// 
+        /// <param name="image">Image to search glyphs in.</param>
+        /// 
+        /// <returns>Return a list of found glyphs.</returns>
+        /// 
+        /// <remarks><para>The method does processing of the specified image and searches for glyphs in it of
+        /// the specified <see cref="GlyphSize">size</see>. In the case if <see cref="GlyphDatabase">glyphs' database</see>
+        /// is set, it tries to find a matching glyph in it for each found glyph in the image. If matching is found,
+        /// then <see cref="ExtractedGlyphData.RecognizedGlyph">RecognizedGlyph</see> and
+        /// <see cref="ExtractedGlyphData.RecognizedQuadrilateral">RecognizedQuadrilateral</see>
+        /// properties of <see cref="ExtractedGlyphData"/> are set correspondingly.</para></remarks>
+        /// 
+        /// <exception cref="UnsupportedImageFormatException">Pixel format of the specified image is not supported.
+        /// It must be 8 bpp indexed or 24/32 bpp color image.</exception>
+        ///
         public List<ExtractedGlyphData> FindGlyphs( Bitmap image )
         {
             BitmapData bitmapData = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ),
@@ -104,9 +203,33 @@ namespace AForge.Vision.GlyphRecognition
             }
         }
 
+        /// <summary>
+        /// Search for glyphs in the specified image and recognize them.
+        /// </summary>
+        /// 
+        /// <param name="image">Image to search glyphs in.</param>
+        /// 
+        /// <returns>Return a list of found glyphs.</returns>
+        /// 
+        /// <remarks><para>The method does processing of the specified image and searches for glyphs in it of
+        /// the specified <see cref="GlyphSize">size</see>. In the case if <see cref="GlyphDatabase">glyphs' database</see>
+        /// is set, it tries to find a matching glyph in it for each found glyph in the image. If matching is found,
+        /// then <see cref="ExtractedGlyphData.RecognizedGlyph">RecognizedGlyph</see> and
+        /// <see cref="ExtractedGlyphData.RecognizedQuadrilateral">RecognizedQuadrilateral</see>
+        /// properties of <see cref="ExtractedGlyphData"/> are set correspondingly.</para></remarks>
+        /// 
+        /// <exception cref="UnsupportedImageFormatException">Pixel format of the specified image is not supported.
+        /// It must be 8 bpp indexed or 24/32 bpp color image.</exception>
+        /// 
         public List<ExtractedGlyphData> FindGlyphs( UnmanagedImage image )
         {
             List<ExtractedGlyphData> extractedGlyphs = new List<ExtractedGlyphData>( );
+
+            if ( ( image.PixelFormat != PixelFormat.Format8bppIndexed ) &&
+                 ( !Grayscale.CommonAlgorithms.BT709.FormatTranslations.ContainsKey( image.PixelFormat ) ) )
+            {
+                throw new UnsupportedImageFormatException( "Pixel format of the specified image is not supported." );
+            }
 
             // 1 - grayscaling
             UnmanagedImage grayImage = null;
@@ -176,6 +299,8 @@ namespace AForge.Vision.GlyphRecognition
             return extractedGlyphs;
         }
 
+        #region Helper methods
+        // Try recognizing the glyph in the specified image defined by the specified quadrilateral
         private ExtractedGlyphData RecognizeGlyph( UnmanagedImage image, List<IntPoint> quadrilateral )
         {
             // extract glyph image
@@ -210,13 +335,8 @@ namespace AForge.Vision.GlyphRecognition
 
                             while ( rotation > 0 )
                             {
-
                                 foundGlyph.RecognizedQuadrilateral.Add( foundGlyph.RecognizedQuadrilateral[0] );
                                 foundGlyph.RecognizedQuadrilateral.RemoveAt( 0 );
-
-                                /*foundGlyph.RecognizedQuadrilateral.Insert( 0, foundGlyph.RecognizedQuadrilateral[3] );
-                                foundGlyph.RecognizedQuadrilateral.RemoveAt( 4 );*/
-
 
                                 rotation -= 90;
                             }
@@ -230,6 +350,7 @@ namespace AForge.Vision.GlyphRecognition
             return null;
         }
 
+        // Check if the specified raw glyph's data has a black border
         private bool CheckIfGlyphHasBorder( byte[,] rawGlyphData )
         {
             int sizeM1 = rawGlyphData.GetLength( 0 ) - 1;
@@ -250,6 +371,7 @@ namespace AForge.Vision.GlyphRecognition
             return true;
         }
 
+        // Check if the specified raw glyph's data has a value in each row/column
         private bool CheckIfEveryRowColumnHasValue( byte[,] rawGlyphData )
         {
             int sizeM1 = rawGlyphData.GetLength( 0 ) - 1;
@@ -275,10 +397,6 @@ namespace AForge.Vision.GlyphRecognition
 
             return true;
         }
-
-        
-
-
 
         private const double angleError1 = 45;
         private const double angleError2 = 75;
@@ -378,5 +496,6 @@ namespace AForge.Vision.GlyphRecognition
 
             return diff / pixelCount;
         }
+        #endregion
     }
 }

@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace GlyphRecognitionStudio
 {
-    // Data use for visualization of recognized glyph
+    // Data used for visualization of recognized glyph
     struct GlyphVisualizationData
     {
         // Color to use for highlight and glyph name

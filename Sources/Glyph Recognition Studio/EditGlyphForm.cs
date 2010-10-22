@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -20,9 +21,9 @@ namespace GlyphRecognitionStudio
     {
         private Glyph glyph;
         private GlyphVisualizationData visualizationData;
-        private List<string> forbiddenNames;
+        private ReadOnlyCollection<string> forbiddenNames;
 
-        public EditGlyphForm( Glyph glyph, List<string> existingNames )
+        public EditGlyphForm( Glyph glyph, ReadOnlyCollection<string> existingNames )
         {
             InitializeComponent( );
 

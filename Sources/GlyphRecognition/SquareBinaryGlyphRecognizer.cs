@@ -1,32 +1,82 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-
-using AForge;
-using AForge.Imaging;
+﻿// Gliph Recognition Library
+// http://www.aforgenet.com/projects/gratf/
+//
+// Copyright © Andrew Kirillov, 2010
+// andrew.kirillov@aforgenet.com
+//
 
 namespace AForge.Vision.GlyphRecognition
 {
-    class SquareBinaryGlyphRecognizer
+    using System;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+
+    using AForge;
+    using AForge.Imaging;
+
+    /// <summary>
+    /// Recognition of square glyphs in binary images.
+    /// </summary>
+    /// 
+    /// <remarks><para>The class performs processing of binary images trying to recognize square glyph
+    /// of the specified <see cref="GlyphSize">size</see>.</para></remarks>
+    /// 
+    public class SquareBinaryGlyphRecognizer
     {
         private int glyphSize = 5;
 
+        /// <summary>
+        /// Glyph size to recognize, [5, 23].
+        /// </summary>
+        ///
+        /// <remarks><para>The property sets glyphs' size to recognize in given images.</para>
+        /// 
+        /// <para>Default value is set to <b>5</b>.</para>
+        /// </remarks>
+        ///
         public int GlyphSize
         {
             get { return glyphSize; }
             set { glyphSize = System.Math.Max( 5, System.Math.Min( 23, value ) ); }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SquareBinaryGlyphRecognizer"/> class.
+        /// </summary>
+        /// 
         public SquareBinaryGlyphRecognizer( )
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SquareBinaryGlyphRecognizer"/> class.
+        /// </summary>
+        /// 
+        /// <param name="glyphSize">Glyph <see cref="GlyphSize">size</see> to recognize.</param>
+        /// 
         public SquareBinaryGlyphRecognizer( int glyphSize )
         {
-            this.glyphSize = glyphSize;
+            GlyphSize = glyphSize;
         }
 
-        // Recognize glyph in managed image
+        /// <summary>
+        /// Recognize glyph in the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">Image to recognize glyph in.</param>
+        /// <param name="rect">Rectangle of the glyph to recognize.</param>
+        /// <param name="confidence">Gets recognition confidence on return.</param>
+        /// 
+        /// <returns>Returns recognized glyph's data - 2D array of <see cref="GlyphSize"/>x<see cref="GlyphSize"/>.</returns>
+        /// 
+        /// <remarks><para>Performs processing of the specified image recognizing a glyph in it and providing confidence
+        /// level of recognition. If the confidence level equals to 1.0, then this routine is 100% confident about the recognized glyph.
+        /// If the confidence level is getting closer to 0.5, then it means that some glyph's values are not reliable
+        /// enough – kind of 50/50: certain glyph’s rectangle may not be white enough or may not be black enough.</para>
+        /// </remarks>
+        /// 
+        /// <exception cref="UnsupportedImageFormatException">Pixel format of the specified image is not supported. Must be 8 bpp indexed image.</exception>
+        /// 
         public byte[,] Recognize( Bitmap image, Rectangle rect, out float confidence )
         {
             BitmapData data = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ),
@@ -42,9 +92,31 @@ namespace AForge.Vision.GlyphRecognition
             }
         }
 
-        // Recognize glyph in unmanaged image
+        /// <summary>
+        /// Recognize glyph in the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">Image to recognize glyph in.</param>
+        /// <param name="rect">Rectangle of the glyph to recognize.</param>
+        /// <param name="confidence">Gets recognition confidence on return.</param>
+        /// 
+        /// <returns>Returns recognized glyph's data - 2D array of <see cref="GlyphSize"/>x<see cref="GlyphSize"/>.</returns>
+        /// 
+        /// <remarks><para>Performs processing of the specified image recognizing a glyph in it and providing confidence
+        /// level of recognition. If the confidence level equals to 1.0, then this routine is 100% confident about the recognized glyph.
+        /// If the confidence level is getting closer to 0.5, then it means that some glyph's values are not reliable
+        /// enough – kind of 50/50: certain glyph’s rectangle may not be white enough or may not be black enough.</para>
+        /// </remarks>
+        /// 
+        /// <exception cref="UnsupportedImageFormatException">Pixel format of the specified image is not supported. Must be 8 bpp indexed image.</exception>
+        /// 
         public byte[,] Recognize( UnmanagedImage image, Rectangle rect, out float confidence )
         {
+            if ( image.PixelFormat != PixelFormat.Format8bppIndexed )
+            {
+                throw new UnsupportedImageFormatException( "Pixel format of the specified image is not supported." );
+            }
+
             int glyphStartX = rect.Left;
             int glyphStartY = rect.Top;
 

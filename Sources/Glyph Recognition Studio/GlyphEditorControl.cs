@@ -22,10 +22,10 @@ namespace GlyphRecognitionStudio
         // glyph to edit
         private byte[,] glyph = null;
 
-        // enable/disable of editing border (false const for now)
+        // enable/disable of editing border (true const for now)
         private const bool disableEditingBorders = true;
 
-        // Set/glyph to edit
+        // Set/get glyph data to edit
         public byte[,] GlyphData
         {
             get { return glyph; }

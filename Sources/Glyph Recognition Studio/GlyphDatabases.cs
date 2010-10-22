@@ -145,7 +145,7 @@ namespace GlyphRecognitionStudio
                     // read all glyphs
                     for ( int i = 0; i < count; i++ )
                     {
-                        // read to the next glyp node
+                        // read to the next glyph node
                         xmlIn.Read( );
 
                         string glyphName = xmlIn.GetAttribute( nameAttr );
