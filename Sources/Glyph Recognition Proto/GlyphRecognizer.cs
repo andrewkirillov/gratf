@@ -82,7 +82,7 @@ namespace GlyphRecognitionProto
                 if ( shapeChecker.IsQuadrilateral( edgePoints, out corners ) )
                 {
                     // do some more checks to filter so unacceptable shapes
-                    if ( CheckIfShapeIsAcceptable( corners ) )
+                    // if ( CheckIfShapeIsAcceptable( corners ) )
                     {
                         log.AddMessage( "Blob size: " + blobs[i].Rectangle.Width + " x " + blobs[i].Rectangle.Height );
 

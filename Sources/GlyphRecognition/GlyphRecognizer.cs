@@ -398,49 +398,6 @@ namespace AForge.Vision.GlyphRecognition
             return true;
         }
 
-        private const double angleError1 = 45;
-        private const double angleError2 = 75;
-        private const double lengthError = 0.75;
-
-        // Check if quadrilateral's shape is acceptable for further analysis
-        private bool CheckIfShapeIsAcceptable( List<IntPoint> corners )
-        {
-            // get angles between 2 pairs of opposite sides
-            double angleBetween1stPair = GeometryTools.GetAngleBetweenLines( corners[0], corners[1], corners[2], corners[3] );
-            double angleBetween2ndPair = GeometryTools.GetAngleBetweenLines( corners[1], corners[2], corners[3], corners[0] );
-
-            // check that angle between opposite side is not too big
-            if ( ( angleBetween1stPair <= angleError1 ) && ( angleBetween2ndPair <= angleError1 ) )
-            {
-                double angle1 = GeometryTools.GetAngleBetweenVectors( corners[1], corners[0], corners[2] );
-                double angle2 = GeometryTools.GetAngleBetweenVectors( corners[2], corners[1], corners[3] );
-                double angle3 = GeometryTools.GetAngleBetweenVectors( corners[3], corners[2], corners[0] );
-                double angle4 = GeometryTools.GetAngleBetweenVectors( corners[0], corners[3], corners[1] );
-
-                // check that angle between adjacent sides is not very small or too flat
-                if ( ( System.Math.Abs( angle1 - 90 ) <= angleError2 ) &&
-                     ( System.Math.Abs( angle2 - 90 ) <= angleError2 ) &&
-                     ( System.Math.Abs( angle3 - 90 ) <= angleError2 ) &&
-                     ( System.Math.Abs( angle4 - 90 ) <= angleError2 ) )
-                {
-                    // get length of all sides
-                    float side1Length = (float) corners[0].DistanceTo( corners[1] );
-                    float side2Length = (float) corners[1].DistanceTo( corners[2] );
-                    float side3Length = (float) corners[2].DistanceTo( corners[3] );
-                    float side4Length = (float) corners[3].DistanceTo( corners[0] );
-
-                    float max = System.Math.Max( System.Math.Max( side1Length, side2Length ), System.Math.Max( side3Length, side4Length ) );
-                    float min = System.Math.Min( System.Math.Min( side1Length, side2Length ), System.Math.Min( side3Length, side4Length ) );
-
-                    // check that shortest side is not too small compared to the longest side
-                    if ( min >= max * ( 1 - lengthError ) )
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
         private const int stepSize = 3;
 
         // Calculate average brightness difference between pixels outside and inside of the object
