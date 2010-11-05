@@ -66,6 +66,12 @@ namespace GlyphRecognitionStudio
         // On button "OK" click
         private void okButton_Click( object sender, EventArgs e )
         {
+            if ( !Glyph.CheckIfEveryRowColumnHasValue( glyphEditor.GlyphData ) )
+            {
+                MessageBox.Show( "A glyph must have at least one white cell in every row and column.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+
             if ( Glyph.CheckIfRotationInvariant( glyphEditor.GlyphData ) )
             {
                 MessageBox.Show( "The glyph is rotation invariant (it looks the same if rotated), so its rotaton will not be recognized.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );

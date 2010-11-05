@@ -319,7 +319,7 @@ namespace AForge.Vision.GlyphRecognition
             if ( confidence >= minConfidenceLevel )
             {
                 if ( ( CheckIfGlyphHasBorder( glyphValues ) ) &&
-                     ( CheckIfEveryRowColumnHasValue( glyphValues ) ) ) 
+                     ( Glyph.CheckIfEveryRowColumnHasValue( glyphValues ) ) ) 
                 {
                     ExtractedGlyphData foundGlyph = new ExtractedGlyphData( quadrilateral, glyphValues, confidence );
 
@@ -365,33 +365,6 @@ namespace AForge.Vision.GlyphRecognition
                 if ( rawGlyphData[i, 0] == 1)
                     return false;
                 if ( rawGlyphData[i, sizeM1] == 1 )
-                    return false;
-            }
-
-            return true;
-        }
-
-        // Check if the specified raw glyph's data has a value in each row/column
-        private bool CheckIfEveryRowColumnHasValue( byte[,] rawGlyphData )
-        {
-            int sizeM1 = rawGlyphData.GetLength( 0 ) - 1;
-            byte[] rows = new byte[sizeM1];
-            byte[] cols = new byte[sizeM1];
-
-            for ( int i = 1; i < sizeM1; i++ )
-            {
-                for ( int j = 1; j < sizeM1; j++ )
-                {
-                    byte value = rawGlyphData[i, j];
-
-                    rows[i] |= value;
-                    cols[j] |= value;
-                }
-            }
-
-            for ( int i = 1; i < sizeM1; i++ )
-            {
-                if ( ( rows[i] == 0 ) || ( cols[i] == 0 ) )
                     return false;
             }
 

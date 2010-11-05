@@ -205,6 +205,8 @@ namespace AForge.Vision.GlyphRecognition
         /// be possible to recognize rotation of the glyph. But for some applications, where glyph are not supposed
         /// to be rotated, the rotation invariance is also acceptable.</para></remarks>
         /// 
+        /// <exception cref="ArgumentException">Invalid glyph data array - must be square.</exception>
+        /// 
         public static bool CheckIfRotationInvariant( byte[,] rawGlyphData )
         {
             int size = rawGlyphData.GetLength( 0 );
@@ -236,6 +238,56 @@ namespace AForge.Vision.GlyphRecognition
             }
 
             return ( match2 || match3 || match4 );
+        }
+
+        /// <summary>
+        /// Check if the specified raw glyph's data has a value in each inner row/column.
+        /// </summary>
+        /// 
+        /// <param name="rawGlyphData">Glyph data to check.</param>
+        /// 
+        /// <returns>Returns <see langword="true"/> if the specified glyph data contain
+        /// a value (elemenent equal to 1) in every inner row/column
+        /// or <see langword="false"/> otherwise.</returns>
+        /// 
+        /// <remarks><para>The tool method is used to check if specified glyph data have at least
+        /// single element equal to 1 in every row/column except the first and the last.
+        /// </para></remarks>
+        /// 
+        /// <exception cref="ArgumentException">Invalid glyph data array - must be square.</exception>
+        /// 
+        public static bool CheckIfEveryRowColumnHasValue( byte[,] rawGlyphData )
+        {
+            int size = rawGlyphData.GetLength( 0 );
+
+            if ( size != rawGlyphData.GetLength( 1 ) )
+            {
+                throw new ArgumentException( "Invalid glyph data array - must be square." );
+            }
+
+            int sizeM1 = size - 1;
+
+            byte[] rows = new byte[sizeM1];
+            byte[] cols = new byte[sizeM1];
+
+            for ( int i = 1; i < sizeM1; i++ )
+            {
+                for ( int j = 1; j < sizeM1; j++ )
+                {
+                    byte value = rawGlyphData[i, j];
+
+                    rows[i] |= value;
+                    cols[j] |= value;
+                }
+            }
+
+            for ( int i = 1; i < sizeM1; i++ )
+            {
+                if ( ( rows[i] == 0 ) || ( cols[i] == 0 ) )
+                    return false;
+            }
+
+            return true;
         }
     }
 }
