@@ -1,0 +1,22 @@
+GRATF 1.0.0 release notes
+------------------------------
+05.11.2010.
+
+First release of the project. Based on AForge.NET framework v.2.1.4
+
+It includes:
+
+- A prototype of glyph recognition algorithm, which is implemented as a
+  plug-in to IPPrototyper tool from AForge.NET framework. Can be used
+  for demonstrating glyph recognition algorithm's idea step by step or
+  for its further improvement, debugging and testing.
+  
+- Glyph Recognition Studio - an application which does recognition of glyphs
+  in video streams (video files or local capture devices, like web cameras).
+  Also the application does 2D augmented reality - puts images into video
+  feed replacing recognized glyphs - virtual objects in real world.
+
+- Glyph recognition library, which is an extension to AForge.NET framework.
+  The library can be reused in other applications which require glyph
+  recognition functionality.
+  
