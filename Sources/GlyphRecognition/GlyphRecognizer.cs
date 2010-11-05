@@ -318,7 +318,7 @@ namespace AForge.Vision.GlyphRecognition
 
             if ( confidence >= minConfidenceLevel )
             {
-                if ( ( CheckIfGlyphHasBorder( glyphValues ) ) &&
+                if ( ( Glyph.CheckIfGlyphHasBorder( glyphValues ) ) &&
                      ( Glyph.CheckIfEveryRowColumnHasValue( glyphValues ) ) ) 
                 {
                     ExtractedGlyphData foundGlyph = new ExtractedGlyphData( quadrilateral, glyphValues, confidence );
@@ -348,27 +348,6 @@ namespace AForge.Vision.GlyphRecognition
             }
 
             return null;
-        }
-
-        // Check if the specified raw glyph's data has a black border
-        private bool CheckIfGlyphHasBorder( byte[,] rawGlyphData )
-        {
-            int sizeM1 = rawGlyphData.GetLength( 0 ) - 1;
-
-            for ( int i = 0; i <= sizeM1; i++ )
-            {
-                if ( rawGlyphData[0, i] == 1 )
-                    return false;
-                if ( rawGlyphData[sizeM1, i] == 1 )
-                    return false;
-
-                if ( rawGlyphData[i, 0] == 1)
-                    return false;
-                if ( rawGlyphData[i, sizeM1] == 1 )
-                    return false;
-            }
-
-            return true;
         }
 
         private const int stepSize = 3;

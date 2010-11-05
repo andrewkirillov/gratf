@@ -289,5 +289,44 @@ namespace AForge.Vision.GlyphRecognition
 
             return true;
         }
+
+        /// <summary>
+        /// Check if the specified raw glyph's data have a border of 0 elements.
+        /// </summary>
+        /// 
+        /// <param name="rawGlyphData">Glyph data to check.</param>
+        /// 
+        /// <returns>Returns <see langword="true"/> if the specified glyph data contain
+        /// 0 elements only in the first and the last row and column
+        /// or <see langword="false"/> otherwise.</returns>
+        /// 
+        /// <exception cref="ArgumentException">Invalid glyph data array - must be square.</exception>
+        /// 
+        public static bool CheckIfGlyphHasBorder( byte[,] rawGlyphData )
+        {
+            int size = rawGlyphData.GetLength( 0 );
+
+            if ( size != rawGlyphData.GetLength( 1 ) )
+            {
+                throw new ArgumentException( "Invalid glyph data array - must be square." );
+            }
+
+            int sizeM1 = size - 1;
+
+            for ( int i = 0; i <= sizeM1; i++ )
+            {
+                if ( rawGlyphData[0, i] == 1 )
+                    return false;
+                if ( rawGlyphData[sizeM1, i] == 1 )
+                    return false;
+
+                if ( rawGlyphData[i, 0] == 1 )
+                    return false;
+                if ( rawGlyphData[i, sizeM1] == 1 )
+                    return false;
+            }
+
+            return true;
+        }
     }
 }
