@@ -22,6 +22,7 @@ namespace GlyphRecognitionStudio
         private Glyph glyph;
         private GlyphVisualizationData visualizationData;
         private ReadOnlyCollection<string> forbiddenNames;
+        private GlyphDataCheckingHandeler glyphDataChecker = null;
 
         public EditGlyphForm( Glyph glyph, ReadOnlyCollection<string> existingNames )
         {
@@ -39,6 +40,11 @@ namespace GlyphRecognitionStudio
             nameBox.Text = glyph.Name;
             colorButton.BackColor = visualizationData.Color;
             UpdateGlyphIcon( );
+        }
+
+        public void SetGlyphDataCheckingHandeler( GlyphDataCheckingHandeler handler )
+        {
+            glyphDataChecker = handler;
         }
 
         // On glyph's name editing
@@ -75,6 +81,12 @@ namespace GlyphRecognitionStudio
             if ( Glyph.CheckIfRotationInvariant( glyphEditor.GlyphData ) )
             {
                 MessageBox.Show( "The glyph is rotation invariant (it looks the same if rotated), so its rotaton will not be recognized.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+
+            if ( ( glyphDataChecker != null ) && ( !glyphDataChecker( glyphEditor.GlyphData ) ) )
+            {
+                // return since external glyph data checker does not like the glyph
                 return;
             }
 
@@ -125,4 +137,6 @@ namespace GlyphRecognitionStudio
             }
         }
     }
+
+    public delegate bool GlyphDataCheckingHandeler( byte[,] glyphData );
 }

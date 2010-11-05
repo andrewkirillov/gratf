@@ -276,9 +276,13 @@ namespace GlyphRecognitionStudio
             {
                 // create new glyph ...
                 Glyph glyph = new Glyph( string.Empty, activeGlyphDatabase.Size );
+                glyphNameInEditor = string.Empty;
                 // ... and pass it the glyph editting form
                 EditGlyphForm glyphForm = new EditGlyphForm( glyph, activeGlyphDatabase.GetGlyphNames( ) );
                 glyphForm.Text = "New Glyph";
+
+                // set glyph data checking handler
+                glyphForm.SetGlyphDataCheckingHandeler( new GlyphDataCheckingHandeler( CheckGlyphData ) );
 
                 if ( glyphForm.ShowDialog( ) == DialogResult.OK )
                 {
@@ -325,10 +329,13 @@ namespace GlyphRecognitionStudio
                 // get selected item and it glyph ...
                 ListViewItem lvi = glyphList.SelectedItems[0];
                 Glyph glyph = (Glyph) activeGlyphDatabase[lvi.Text].Clone( );
-                string glyphOldName = glyph.Name;
-                // ... and pass it the glyph editting form
+                glyphNameInEditor = glyph.Name;
+                // ... and pass it to the glyph editting form
                 EditGlyphForm glyphForm = new EditGlyphForm( glyph, activeGlyphDatabase.GetGlyphNames( ) );
                 glyphForm.Text = "Edit Glyph";
+
+                // set glyph data checking handler
+                glyphForm.SetGlyphDataCheckingHandeler( new GlyphDataCheckingHandeler( CheckGlyphData ) );
 
                 if ( glyphForm.ShowDialog( ) == DialogResult.OK )
                 {
@@ -337,7 +344,7 @@ namespace GlyphRecognitionStudio
                         // replace glyph in the database
                         lock ( glyphProcessingSynch )
                         {
-                            activeGlyphDatabase.Replace( glyphOldName, glyph );
+                            activeGlyphDatabase.Replace( glyphNameInEditor, glyph );
                         }
 
                         lvi.Text = glyph.Name;
@@ -346,10 +353,10 @@ namespace GlyphRecognitionStudio
                         lvi.ImageKey = null;
 
                         // remove old icon and add new one
-                        glyphsImageList.Images.RemoveByKey( glyphOldName );
+                        glyphsImageList.Images.RemoveByKey( glyphNameInEditor );
                         glyphsImageList.Images.Add( glyph.Name, CreateIconForGlyph( glyph ) );
 
-                        // restor item's icon
+                        // restore item's icon
                         lvi.ImageKey = glyph.Name;
                     }
                     catch
@@ -359,6 +366,27 @@ namespace GlyphRecognitionStudio
                     }
                 }
             }
+        }
+
+        string glyphNameInEditor = string.Empty;
+
+        // Handler for checking glyph data - need to make sure there is not such glyph in database already
+        private bool CheckGlyphData( byte[,] glyphData )
+        {
+            if ( activeGlyphDatabase != null )
+            {
+                int rotation;
+                Glyph recognizedGlyph = activeGlyphDatabase.RecognizeGlyph( glyphData, out rotation );
+
+                if ( ( recognizedGlyph != null ) && ( recognizedGlyph.Name != glyphNameInEditor ) )
+                {
+                    MessageBox.Show( "The database already contains a glyph which looks the same as it is or after rotation.",
+                        ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         // Delete selected glyph
