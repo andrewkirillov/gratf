@@ -26,8 +26,7 @@ namespace GlyphRecognitionStudio
         // quadrilateral transformation used to put image in place of glyph
         private BackwardQuadrilateralTransformation quadrilateralTransformation = new BackwardQuadrilateralTransformation( );
 
-        // default pen and color to highlight glyphs
-        private Pen defaultPen = new Pen( Color.Red, 3 );
+        // default font to highlight glyphs
         private Font defaultFont = new Font( FontFamily.GenericSerif, 15, FontStyle.Bold );
 
         // Database of glyphs to recognize
@@ -75,43 +74,33 @@ namespace GlyphRecognitionStudio
                         // highlight each found glyph
                         foreach ( ExtractedGlyphData glyphData in glyphs )
                         {
-                            if ( ( glyphData.RecognizedGlyph == null ) || ( glyphData.RecognizedGlyph.UserData == null ) )
+                            Pen pen = new Pen( ( ( glyphData.RecognizedGlyph == null ) || ( glyphData.RecognizedGlyph.UserData == null ) ) ?
+                                Color.Red : ( (GlyphVisualizationData) glyphData.RecognizedGlyph.UserData).Color, 3 );
+
+                            // highlight border
+                            g.DrawPolygon( pen, ToPointsArray( glyphData.Quadrilateral ) );
+
+                            // show glyph's name
+                            if ( ( visualizationType == VisualizationType.Name ) && (  glyphData.RecognizedGlyph != null ) )
                             {
-                                // highlight with default pen
-                                g.DrawPolygon( defaultPen, ToPointsArray( glyphData.Quadrilateral ) );
+                                // get glyph's center point
+                                IntPoint minXY, maxXY;
+                                PointsCloud.GetBoundingRectangle( glyphData.Quadrilateral, out minXY, out maxXY );
+                                IntPoint center = ( minXY + maxXY ) / 2;
+
+                                // glyph's name size
+                                SizeF nameSize = g.MeasureString( glyphData.RecognizedGlyph.Name, defaultFont );
+
+                                // paint the name
+                                Brush brush = new SolidBrush( pen.Color);
+
+                                g.DrawString( glyphData.RecognizedGlyph.Name, defaultFont, brush,
+                                    new Point( center.X - (int) nameSize.Width / 2, center.Y - (int) nameSize.Height / 2 ) );
+
+                                brush.Dispose( );
                             }
-                            else
-                            {
-                                GlyphVisualizationData visualization =
-                                    (GlyphVisualizationData) glyphData.RecognizedGlyph.UserData;
 
-                                Pen pen = new Pen( visualization.Color, 3 );
-
-                                // highlight border
-                                g.DrawPolygon( pen, ToPointsArray( glyphData.Quadrilateral ) );
-
-                                // show glyph's name
-                                if ( visualizationType == VisualizationType.Name )
-                                {
-                                    // get glyph's center point
-                                    IntPoint minXY, maxXY;
-                                    PointsCloud.GetBoundingRectangle( glyphData.Quadrilateral, out minXY, out maxXY );
-                                    IntPoint center = ( minXY + maxXY ) / 2;
-
-                                    // glyph's name size
-                                    SizeF nameSize = g.MeasureString( glyphData.RecognizedGlyph.Name, defaultFont );
-
-                                    // paint the name
-                                    Brush brush = new SolidBrush( visualization.Color );
-
-                                    g.DrawString( glyphData.RecognizedGlyph.Name, defaultFont, brush,
-                                        new Point( center.X - (int) nameSize.Width / 2, center.Y - (int) nameSize.Height / 2 ) );
-
-                                    brush.Dispose( );
-                                }
-
-                                pen.Dispose( );
-                            }
+                            pen.Dispose( );
                         }
                     }
                     else
