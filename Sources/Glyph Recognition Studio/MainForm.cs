@@ -1,7 +1,7 @@
 ﻿// Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010
+// Copyright © Andrew Kirillov, 2010-2011
 // andrew.kirillov@aforgenet.com
 //
 
@@ -180,7 +180,7 @@ namespace GlyphRecognitionStudio
             videoSourcePlayer.WaitForStop( );
 
             // start new video source
-            videoSourcePlayer.VideoSource = source;
+            videoSourcePlayer.VideoSource = new AsyncVideoSource( source );
             videoSourcePlayer.Start( );
 
             // reset statistics
