@@ -1,7 +1,7 @@
 ﻿// Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010
+// Copyright © Andrew Kirillov, 2010-2011
 // andrew.kirillov@aforgenet.com
 //
 

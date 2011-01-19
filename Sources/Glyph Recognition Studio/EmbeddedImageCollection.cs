@@ -80,7 +80,7 @@ namespace GlyphRecognitionStudio
                         // load image and make sure it is 24 bpp RGB image by cloning to the format
                         Bitmap image = AForge.Imaging.Image.Clone(
                             new Bitmap( assembly.GetManifestResourceStream(
-                                string.Format( "GlyphRecognitionStudio.Images.{0}.png", name ) ) ),
+                                string.Format( "{0}.{1}.png", imagesNameSpace, name ) ) ),
                             PixelFormat.Format24bppRgb );
 
                         images.Add( name, image );

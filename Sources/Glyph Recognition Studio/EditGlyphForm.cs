@@ -1,7 +1,7 @@
 ﻿// Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010
+// Copyright © Andrew Kirillov, 2010-2011
 // andrew.kirillov@aforgenet.com
 //
 
@@ -14,6 +14,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using AForge.Vision.GlyphRecognition;
+using Xna3DViewer;
 
 namespace GlyphRecognitionStudio
 {
@@ -40,6 +41,7 @@ namespace GlyphRecognitionStudio
             nameBox.Text = glyph.Name;
             colorButton.BackColor = visualizationData.Color;
             UpdateGlyphIcon( );
+            UpdateModelImage( );
         }
 
         public void SetGlyphDataCheckingHandeler( GlyphDataCheckingHandeler handler )
@@ -110,7 +112,7 @@ namespace GlyphRecognitionStudio
             }
         }
 
-        // Picture box clicked - select image for a glyph
+        // Picture box clicked - select image for the glyph
         private void pictureBox_Click( object sender, EventArgs e )
         {
             ImageSelectorForm form = new ImageSelectorForm( );
@@ -121,6 +123,20 @@ namespace GlyphRecognitionStudio
             {
                 visualizationData.ImageName = form.ImageName;
                 UpdateGlyphIcon( );
+            }
+        }
+
+        // Model picture box clicked - select 3D model for the glyph
+        private void modelBox_Click( object sender, EventArgs e )
+        {
+            ModelSelectorForm form = new ModelSelectorForm( );
+
+            form.ModelName = visualizationData.ModelName;
+
+            if ( form.ShowDialog( ) == DialogResult.OK )
+            {
+                visualizationData.ModelName = form.ModelName;
+                UpdateModelImage( );
             }
         }
 
@@ -136,7 +152,21 @@ namespace GlyphRecognitionStudio
                 pictureBox.Image = EmbeddedImageCollection.Instance.GetImage( visualizationData.ImageName );
             }
         }
+
+        // Show image corresponding to glyph's 3D models
+        private void UpdateModelImage( )
+        {
+            if ( visualizationData.ModelName == null )
+            {
+                modelBox.Image = null;
+            }
+            else
+            {
+                modelBox.Image = ModelsCollection.Instance.GetModelImage( visualizationData.ModelName );
+            }
+        }
     }
+
 
     public delegate bool GlyphDataCheckingHandeler( byte[,] glyphData );
 }

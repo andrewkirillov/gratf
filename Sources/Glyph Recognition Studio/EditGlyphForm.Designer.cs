@@ -42,10 +42,13 @@
             this.colorButton = new System.Windows.Forms.Button( );
             this.label2 = new System.Windows.Forms.Label( );
             this.colorDialog = new System.Windows.Forms.ColorDialog( );
+            this.modelBox = new System.Windows.Forms.PictureBox( );
+            this.label4 = new System.Windows.Forms.Label( );
             this.groupBox1.SuspendLayout( );
             ( (System.ComponentModel.ISupportInitialize) ( this.errorProvider ) ).BeginInit( );
             this.groupBox2.SuspendLayout( );
             ( (System.ComponentModel.ISupportInitialize) ( this.pictureBox ) ).BeginInit( );
+            ( (System.ComponentModel.ISupportInitialize) ( this.modelBox ) ).BeginInit( );
             this.SuspendLayout( );
             // 
             // label1
@@ -110,6 +113,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add( this.modelBox );
+            this.groupBox2.Controls.Add( this.label4 );
             this.groupBox2.Controls.Add( this.pictureBox );
             this.groupBox2.Controls.Add( this.label3 );
             this.groupBox2.Controls.Add( this.colorButton );
@@ -125,7 +130,7 @@
             // 
             this.pictureBox.BackColor = System.Drawing.SystemColors.ControlDark;
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox.Location = new System.Drawing.Point( 110, 36 );
+            this.pictureBox.Location = new System.Drawing.Point( 100, 35 );
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size( 50, 50 );
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -136,7 +141,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point( 115, 20 );
+            this.label3.Location = new System.Drawing.Point( 105, 20 );
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size( 39, 13 );
             this.label3.TabIndex = 2;
@@ -159,6 +164,27 @@
             this.label2.Size = new System.Drawing.Size( 78, 13 );
             this.label2.TabIndex = 0;
             this.label2.Text = "Highlight &Color:";
+            // 
+            // modelBox
+            // 
+            this.modelBox.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.modelBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.modelBox.Location = new System.Drawing.Point( 180, 35 );
+            this.modelBox.Name = "modelBox";
+            this.modelBox.Size = new System.Drawing.Size( 50, 50 );
+            this.modelBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.modelBox.TabIndex = 5;
+            this.modelBox.TabStop = false;
+            this.modelBox.Click += new System.EventHandler( this.modelBox_Click );
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point( 177, 19 );
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size( 56, 13 );
+            this.label4.TabIndex = 4;
+            this.label4.Text = "3D Model:";
             // 
             // EditGlyphForm
             // 
@@ -186,6 +212,7 @@
             this.groupBox2.ResumeLayout( false );
             this.groupBox2.PerformLayout( );
             ( (System.ComponentModel.ISupportInitialize) ( this.pictureBox ) ).EndInit( );
+            ( (System.ComponentModel.ISupportInitialize) ( this.modelBox ) ).EndInit( );
             this.ResumeLayout( false );
             this.PerformLayout( );
 
@@ -206,5 +233,7 @@
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.PictureBox modelBox;
+        private System.Windows.Forms.Label label4;
     }
 }

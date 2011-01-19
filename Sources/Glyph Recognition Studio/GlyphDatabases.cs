@@ -1,7 +1,7 @@
 ﻿// Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010
+// Copyright © Andrew Kirillov, 2010-2011
 // andrew.kirillov@aforgenet.com
 //
 
@@ -34,8 +34,8 @@ namespace GlyphRecognitionStudio
         private const string countAttr = "count";
         private const string colorAttr = "color";
         private const string iconAttr = "icon";
+        private const string modelAttr = "model";
         #endregion
-
 
         // Add glyph database to collection
         public void AddGlyphDatabase( string name, GlyphDatabase db )
@@ -111,8 +111,10 @@ namespace GlyphRecognitionStudio
                         // highlight color
                         xmlOut.WriteAttributeString( colorAttr, string.Format( "{0},{1},{2}",
                             visualization.Color.R, visualization.Color.G, visualization.Color.B ) );
-                        // glyph image
+                        // glyph's image
                         xmlOut.WriteAttributeString( iconAttr, visualization.ImageName );
+                        // glyph's 3D model
+                        xmlOut.WriteAttributeString( modelAttr, visualization.ModelName );
                     }
 
                     xmlOut.WriteEndElement( );
@@ -159,6 +161,8 @@ namespace GlyphRecognitionStudio
                         GlyphVisualizationData visualization = new GlyphVisualizationData( Color.Red );
 
                         visualization.ImageName = xmlIn.GetAttribute( iconAttr );
+                        visualization.ModelName = xmlIn.GetAttribute( modelAttr );
+
                         string colorStr = xmlIn.GetAttribute( colorAttr );
 
                         if ( colorStr != null )
