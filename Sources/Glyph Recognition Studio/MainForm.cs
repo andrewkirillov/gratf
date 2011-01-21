@@ -17,6 +17,8 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Vision.GlyphRecognition;
 
+using Xna3DViewer;
+
 namespace GlyphRecognitionStudio
 {
     public partial class MainForm : Form
@@ -38,6 +40,7 @@ namespace GlyphRecognitionStudio
 
         private ImageList glyphsImageList = new ImageList( );
 
+        private AugmentedRealityForm arForm = null;
         private GlyphImageProcessor imageProcessor = new GlyphImageProcessor( );
         private string glyphProcessingSynch = "!";
 
@@ -64,6 +67,7 @@ namespace GlyphRecognitionStudio
             bordersToolStripMenuItem.Tag = VisualizationType.BorderOnly;
             namesToolStripMenuItem.Tag   = VisualizationType.Name;
             imagesToolStripMenuItem.Tag  = VisualizationType.Image;
+            modelToolStripMenuItem.Tag   = VisualizationType.Model;
         }
 
         // On File->Exit menu item click
@@ -496,6 +500,27 @@ namespace GlyphRecognitionStudio
             if ( item.Tag is VisualizationType )
             {
                 imageProcessor.VisualizationType = (VisualizationType) item.Tag;
+
+                lock ( this )
+                {
+                    if ( imageProcessor.VisualizationType == VisualizationType.Model )
+                    {
+                        if ( arForm == null )
+                        {
+                            arForm = new AugmentedRealityForm( );
+
+                            arForm.FormClosing += new FormClosingEventHandler( arForm_FormClosing );
+                            arForm.Show( );
+                        }
+                    }
+                    else
+                    {
+                        if ( arForm != null )
+                        {
+                            arForm.Close( );
+                        }
+                    }
+                }
             }
         }
 
@@ -505,6 +530,7 @@ namespace GlyphRecognitionStudio
             bordersToolStripMenuItem.Checked = ( imageProcessor.VisualizationType == VisualizationType.BorderOnly );
             namesToolStripMenuItem.Checked   = ( imageProcessor.VisualizationType == VisualizationType.Name );
             imagesToolStripMenuItem.Checked  = ( imageProcessor.VisualizationType == VisualizationType.Image );
+            modelToolStripMenuItem.Checked   = ( imageProcessor.VisualizationType == VisualizationType.Model );
         }
 
         // Activate glyph database with the specified name
@@ -649,7 +675,25 @@ namespace GlyphRecognitionStudio
                 lock ( glyphProcessingSynch )
                 {
                     imageProcessor.ProcessImage( image );
+
+                    if ( arForm != null )
+                    {
+                        arForm.UpdateVideoFrame( image );
+                    }
                 }
+            }
+        }
+
+        // On closing the Augmented Reality form
+        private void arForm_FormClosing( object sender, FormClosingEventArgs e )
+        {
+            arForm.FormClosing -= new FormClosingEventHandler( arForm_FormClosing );
+            arForm = null;
+
+            // reset visualization type if form was closed by user
+            if ( imageProcessor.VisualizationType == VisualizationType.Model )
+            {
+                imageProcessor.VisualizationType = VisualizationType.Name;
             }
         }
     }

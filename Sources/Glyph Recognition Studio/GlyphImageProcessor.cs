@@ -1,7 +1,7 @@
 ﻿// Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010
+// Copyright © Andrew Kirillov, 2010-2011
 // andrew.kirillov@aforgenet.com
 //
 
@@ -103,7 +103,7 @@ namespace GlyphRecognitionStudio
                             pen.Dispose( );
                         }
                     }
-                    else
+                    else if ( visualizationType == VisualizationType.Image )
                     {
                         // lock image for further processing
                         BitmapData bitmapData = bitmap.LockBits( new Rectangle( 0, 0, bitmap.Width, bitmap.Height ),

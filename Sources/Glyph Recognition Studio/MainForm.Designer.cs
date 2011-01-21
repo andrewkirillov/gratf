@@ -41,6 +41,7 @@
             this.bordersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
             this.namesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
             this.imagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+            this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
             this.statusStrip = new System.Windows.Forms.StatusStrip( );
@@ -143,7 +144,8 @@
             this.visualizationTypeToolStripMenuItem.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.bordersToolStripMenuItem,
             this.namesToolStripMenuItem,
-            this.imagesToolStripMenuItem} );
+            this.imagesToolStripMenuItem,
+            this.modelToolStripMenuItem} );
             this.visualizationTypeToolStripMenuItem.Name = "visualizationTypeToolStripMenuItem";
             this.visualizationTypeToolStripMenuItem.Size = new System.Drawing.Size( 169, 22 );
             this.visualizationTypeToolStripMenuItem.Text = "&Visualization Type";
@@ -152,23 +154,30 @@
             // bordersToolStripMenuItem
             // 
             this.bordersToolStripMenuItem.Name = "bordersToolStripMenuItem";
-            this.bordersToolStripMenuItem.Size = new System.Drawing.Size( 114, 22 );
+            this.bordersToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
             this.bordersToolStripMenuItem.Text = "&Borders";
             this.bordersToolStripMenuItem.Click += new System.EventHandler( this.visualizationTypeMenuItem_Click );
             // 
             // namesToolStripMenuItem
             // 
             this.namesToolStripMenuItem.Name = "namesToolStripMenuItem";
-            this.namesToolStripMenuItem.Size = new System.Drawing.Size( 114, 22 );
+            this.namesToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
             this.namesToolStripMenuItem.Text = "&Names";
             this.namesToolStripMenuItem.Click += new System.EventHandler( this.visualizationTypeMenuItem_Click );
             // 
             // imagesToolStripMenuItem
             // 
             this.imagesToolStripMenuItem.Name = "imagesToolStripMenuItem";
-            this.imagesToolStripMenuItem.Size = new System.Drawing.Size( 114, 22 );
+            this.imagesToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
             this.imagesToolStripMenuItem.Text = "&Images";
             this.imagesToolStripMenuItem.Click += new System.EventHandler( this.visualizationTypeMenuItem_Click );
+            // 
+            // modelToolStripMenuItem
+            // 
+            this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.modelToolStripMenuItem.Text = "3D &Model";
+            this.modelToolStripMenuItem.Click += new System.EventHandler( this.visualizationTypeMenuItem_Click );
             // 
             // helpToolStripMenuItem
             // 
@@ -511,6 +520,7 @@
         private System.Windows.Forms.ToolStripMenuItem bordersToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem namesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem imagesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem modelToolStripMenuItem;
     }
 }
 

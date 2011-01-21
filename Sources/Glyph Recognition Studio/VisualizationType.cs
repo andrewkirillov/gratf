@@ -1,7 +1,7 @@
 ﻿// Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010
+// Copyright © Andrew Kirillov, 2010-2011
 // andrew.kirillov@aforgenet.com
 //
 
@@ -20,6 +20,8 @@ namespace GlyphRecognitionStudio
         // Hightlight glyph with border and put its name in the center
         Name,
         // Substitue glyph with its image
-        Image
+        Image,
+        // Show 3D model over the glyph
+        Model
     }
 }
