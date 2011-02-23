@@ -144,9 +144,9 @@ Objects:  {
         Properties60:  {
             Property: "QuaternionInterpolate", "bool", "",0
             Property: "Visibility", "Visibility", "A+",1
-            Property: "Lcl Translation", "Lcl Translation", "A+",0,1.56697559356689,0
-            Property: "Lcl Rotation", "Lcl Rotation", "A+",90,0,0
-            Property: "Lcl Scaling", "Lcl Scaling", "A+",0.908876001834869,1,0.908876001834869
+            Property: "Lcl Translation", "Lcl Translation", "A+",0,0,0
+            Property: "Lcl Rotation", "Lcl Rotation", "A+",180,0,0
+            Property: "Lcl Scaling", "Lcl Scaling", "A+",1,1,1
             Property: "RotationOffset", "Vector3D", "",0,0,0
             Property: "RotationPivot", "Vector3D", "",0,0,0
             Property: "ScalingOffset", "Vector3D", "",0,0,0
@@ -10504,7 +10504,7 @@ Objects:  {
             Property: "FrontAxisSign", "int", "",-1
             Property: "CoordAxis", "int", "",0
             Property: "CoordAxisSign", "int", "",1
-            Property: "UnitScaleFactor", "double", "",2.54
+            Property: "UnitScaleFactor", "double", "",1
         }
     }
 }
