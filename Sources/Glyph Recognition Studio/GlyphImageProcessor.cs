@@ -95,7 +95,7 @@ namespace GlyphRecognitionStudio
                                 Brush brush = new SolidBrush( pen.Color);
 
                                 g.DrawString( glyphData.RecognizedGlyph.Name, defaultFont, brush,
-                                    new Point( center.X - (int) nameSize.Width / 2, center.Y - (int) nameSize.Height / 2 ) );
+                                    new System.Drawing.Point( center.X - (int) nameSize.Width / 2, center.Y - (int) nameSize.Height / 2 ) );
 
                                 brush.Dispose( );
                             }
@@ -143,14 +143,14 @@ namespace GlyphRecognitionStudio
 
         #region Helper methods
         // Convert list of AForge.NET framework's points to array of .NET's points
-        private Point[] ToPointsArray( List<IntPoint> points )
+        private System.Drawing.Point[] ToPointsArray( List<IntPoint> points )
         {
             int count = points.Count;
-            Point[] pointsArray = new Point[count];
+            System.Drawing.Point[] pointsArray = new System.Drawing.Point[count];
 
             for ( int i = 0; i < count; i++ )
             {
-                pointsArray[i] = new Point( points[i].X, points[i].Y );
+                pointsArray[i] = new System.Drawing.Point( points[i].X, points[i].Y );
             }
 
             return pointsArray;
