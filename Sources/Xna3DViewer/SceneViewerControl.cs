@@ -19,6 +19,7 @@ namespace Xna3DViewer
     {
         private Texture2D texture = null;
         private SpriteBatch mainSpriteBatch;
+        private bool isInitialized = false;
 
         public SceneViewerControl( )
         {
@@ -27,6 +28,7 @@ namespace Xna3DViewer
         protected override void Initialize( )
         {
             mainSpriteBatch = new SpriteBatch( GraphicsDevice );
+            isInitialized = true;
         }
 
         // Update scene with new video frame
@@ -34,13 +36,16 @@ namespace Xna3DViewer
         {
             lock ( this )
             {
-                if ( texture != null )
+                if ( isInitialized )
                 {
-                    texture.Dispose( );
-                    texture = null;
-                }
+                    if ( texture != null )
+                    {
+                        texture.Dispose( );
+                        texture = null;
+                    }
 
-                texture = Tools.XNATextureFromBitmap( bitmap, GraphicsDevice );
+                    texture = Tools.XNATextureFromBitmap( bitmap, GraphicsDevice );
+                }
             }
 
             Invalidate( );
