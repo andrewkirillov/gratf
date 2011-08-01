@@ -36,7 +36,9 @@ namespace GlyphRecognitionStudio
 
         private AugmentedRealityForm arForm = null;
         private GlyphImageProcessor imageProcessor = new GlyphImageProcessor( );
-        private string glyphProcessingSynch = "!";
+
+        // object used for synchronization
+        private object sync = new object( );
 
         private const string ErrorBoxTitle = "Error";
 
@@ -283,7 +285,7 @@ namespace GlyphRecognitionStudio
                 {
                     try
                     {
-                        lock ( glyphProcessingSynch )
+                        lock ( sync )
                         {
                             // add glyph to active database
                             activeGlyphDatabase.Add( glyph );
@@ -337,7 +339,7 @@ namespace GlyphRecognitionStudio
                     try
                     {
                         // replace glyph in the database
-                        lock ( glyphProcessingSynch )
+                        lock ( sync )
                         {
                             activeGlyphDatabase.Replace( glyphNameInEditor, glyph );
                         }
@@ -393,7 +395,7 @@ namespace GlyphRecognitionStudio
                 ListViewItem lvi = glyphList.SelectedItems[0];
 
                 // remove glyph from database, from list view and image list
-                lock ( glyphProcessingSynch )
+                lock ( sync )
                 {
                     activeGlyphDatabase.Remove( lvi.Text );
                 }
@@ -663,7 +665,7 @@ namespace GlyphRecognitionStudio
         {
             if ( activeGlyphDatabase != null )
             {
-                lock ( glyphProcessingSynch )
+                lock ( sync )
                 {
                     imageProcessor.ProcessImage( image );
 

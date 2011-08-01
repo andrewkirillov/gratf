@@ -21,6 +21,9 @@ namespace Xna3DViewer
         private SpriteBatch mainSpriteBatch;
         private bool isInitialized = false;
 
+        // object used for synchronization
+        private object sync = new object( );
+
         public SceneViewerControl( )
         {
         }
@@ -34,7 +37,7 @@ namespace Xna3DViewer
         // Update scene with new video frame
         public void UpdateScene( System.Drawing.Bitmap bitmap )
         {
-            lock ( this )
+            lock ( sync )
             {
                 if ( isInitialized )
                 {
@@ -56,7 +59,7 @@ namespace Xna3DViewer
         {
             GraphicsDevice.Clear( Color.Black );
 
-            lock ( this )
+            lock ( sync )
             {
                 if ( texture != null )
                 {

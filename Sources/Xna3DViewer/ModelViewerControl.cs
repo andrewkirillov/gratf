@@ -19,6 +19,9 @@ namespace Xna3DViewer
         private Stopwatch timer;
         private Model model = null;
 
+        // object used for synchronization
+        private object sync = new object( );
+
         public ModelViewerControl( )
         {
         }
@@ -38,7 +41,7 @@ namespace Xna3DViewer
         // Set model to view int the control
         public void SetModelToView( Model model )
         {
-            lock ( this )
+            lock ( sync )
             {
                 this.model = model;
                 Invalidate( );
@@ -50,7 +53,7 @@ namespace Xna3DViewer
         {
             GraphicsDevice.Clear( Color.Black );
 
-            lock ( this )
+            lock ( sync )
             {
                 // draw simple models for now with single mesh
                 if ( ( model != null ) && ( model.Meshes.Count == 1 ) )

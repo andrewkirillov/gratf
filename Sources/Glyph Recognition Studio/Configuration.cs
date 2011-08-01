@@ -25,6 +25,9 @@ namespace GlyphRecognitionStudio
         private string configFileName = null;
         bool isSuccessfullyLoaded = false;
 
+        // object used for synchronization
+        private object sync = new object( );
+
         #region XML Tag Names
         private const string mainTag = "GlyphRecognitionStudio";
         private const string glyphDatabasesTag = "GlyphDatabases";
@@ -80,7 +83,7 @@ namespace GlyphRecognitionStudio
         // Save application's configuration
         public void Save( GlyphDatabases dbs )
         {
-            lock ( baseConfigFileName )
+            lock ( sync )
             {
                 try
                 {
@@ -124,7 +127,7 @@ namespace GlyphRecognitionStudio
         {
             isSuccessfullyLoaded = false;
 
-            lock ( baseConfigFileName )
+            lock ( sync )
             {
                 // check file existance
                 if ( File.Exists( configFileName ) )

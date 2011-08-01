@@ -29,13 +29,16 @@ namespace GlyphRecognitionStudio
         // default font to highlight glyphs
         private Font defaultFont = new Font( FontFamily.GenericSerif, 15, FontStyle.Bold );
 
+        // object used for synchronization
+        private object sync = new object( );
+
         // Database of glyphs to recognize
         public GlyphDatabase GlyphDatabase
         {
             get { return recognizer.GlyphDatabase; }
             set
             {
-                lock ( this )
+                lock ( sync )
                 {
                     recognizer.GlyphDatabase = value;
                 }
@@ -48,7 +51,7 @@ namespace GlyphRecognitionStudio
             get { return visualizationType; }
             set
             {
-                lock ( this )
+                lock ( sync )
                 {
                     visualizationType = value;
                 }
@@ -59,7 +62,7 @@ namespace GlyphRecognitionStudio
         // Process image searching for glyphs and highlighting them
         public void ProcessImage( Bitmap bitmap )
         {
-            lock ( this )
+            lock ( sync )
             {
                 // get list of recognized glyphs
                 List<ExtractedGlyphData> glyphs = recognizer.FindGlyphs( bitmap );

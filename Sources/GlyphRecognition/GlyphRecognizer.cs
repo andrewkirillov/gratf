@@ -42,6 +42,9 @@ namespace AForge.Vision.GlyphRecognition
         // mimimum confidance level for extracted raw glyph data
         private float minConfidenceLevel = 0.60f;
 
+        // object used for synchronization
+        private object sync = new object( );
+
         /// <summary>
         /// Size of glyph to search and recognize, [5, 23].
         /// </summary>
@@ -71,7 +74,7 @@ namespace AForge.Vision.GlyphRecognition
                     throw new ArgumentException( "Invalid glyph size was specified." );
                 }
 
-                lock ( this )
+                lock ( sync )
                 {
                     glyphSize = value;
                     quadrilateralTransformation.NewWidth = quadrilateralTransformation.NewHeight = glyphSize * 20;
@@ -103,7 +106,7 @@ namespace AForge.Vision.GlyphRecognition
             get { return glyphDatabase; }
             set
             {
-                lock ( this )
+                lock ( sync )
                 {
                     glyphDatabase = null;
 
