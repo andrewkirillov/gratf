@@ -12,6 +12,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 using AForge.Video;
 using AForge.Video.DirectShow;
@@ -23,20 +24,13 @@ namespace GlyphRecognitionStudio
 {
     public partial class MainForm : Form
     {
-        // statistics length
-        private const int statLength = 15;
-        // current statistics index
-        private int statIndex = 0;
-        // ready statistics values
-        private int statReady = 0;
-        // statistics array
-        private int[] statCount = new int[statLength];
-
         // collection of glyph databases
         private GlyphDatabases glyphDatabases = new GlyphDatabases( );
         // active glyph database
         private string activeGlyphDatabaseName = null;
         private GlyphDatabase activeGlyphDatabase = null;
+        // stop watch used for measuring FPS
+        private Stopwatch stopWatch = null;
 
         private ImageList glyphsImageList = new ImageList( );
 
@@ -187,8 +181,8 @@ namespace GlyphRecognitionStudio
             videoSourcePlayer.VideoSource = new AsyncVideoSource( source );
             videoSourcePlayer.Start( );
 
-            // reset statistics
-            statIndex = statReady = 0;
+            // reset stop watch
+            stopWatch = null;
 
             // start timer
             timer.Start( );
@@ -203,27 +197,24 @@ namespace GlyphRecognitionStudio
 
             if ( videoSource != null )
             {
-                // get number of frames for the last second
-                statCount[statIndex] = videoSource.FramesReceived;
+                // get number of frames since the last timer tick
+                int framesReceived = videoSource.FramesReceived;
 
-                // increment indexes
-                if ( ++statIndex >= statLength )
-                    statIndex = 0;
-                if ( statReady < statLength )
-                    statReady++;
-
-                float fps = 0;
-
-                // calculate average value
-                for ( int i = 0; i < statReady; i++ )
+                if ( stopWatch == null )
                 {
-                    fps += statCount[i];
+                    stopWatch = new Stopwatch( );
+                    stopWatch.Start( );
                 }
-                fps /= statReady;
+                else
+                {
+                    stopWatch.Stop( );
 
-                statCount[statIndex] = 0;
+                    float fps = 1000.0f * framesReceived / stopWatch.ElapsedMilliseconds;
+                    fpsLabel.Text = fps.ToString( "F2" ) + " fps";
 
-                fpsLabel.Text = fps.ToString( "F2" ) + " fps";
+                    stopWatch.Reset( );
+                    stopWatch.Start( );
+                }
             }
         }
 
