@@ -112,6 +112,7 @@ namespace Xna3DViewer
 
                 if ( content == null )
                 {
+                    graphicsDevice.Disposed += new EventHandler(graphicsDevice_Disposed);
                     content = new ContentManager( graphicsDevice.Services, "Content" );
                 }
 
@@ -127,6 +128,13 @@ namespace Xna3DViewer
             }
 
             return null;
+        }
+
+        // Reset models' collection if graphics device gets disposed
+        private void graphicsDevice_Disposed( object sender, EventArgs e )
+        {
+            content = null;
+            models.Clear( );
         }
     }
 }
