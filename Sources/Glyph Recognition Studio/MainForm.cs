@@ -147,12 +147,8 @@ namespace GlyphRecognitionStudio
 
             if ( form.ShowDialog( this ) == DialogResult.OK )
             {
-                // create video source
-                VideoCaptureDevice videoSource = new VideoCaptureDevice( form.VideoDevice );
-                videoSource.DesiredFrameRate = 30;
-
                 // open it
-                OpenVideoSource( videoSource );
+                OpenVideoSource( form.VideoDevice );
             }
         }
 
