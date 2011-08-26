@@ -192,6 +192,76 @@ namespace AForge.Vision.GlyphRecognition
         }
 
         /// <summary>
+        /// Check for matching between raw data of two glyphs.
+        /// </summary>
+        /// 
+        /// <param name="sourceGlyph">Source glyph data to check.</param>
+        /// <param name="targetGlyph">Target glyph data to match with.</param>
+        /// 
+        /// <returns>Returns -1 if there is no matching between two specified glyphs.
+        /// In the case if match is found it returns:
+        /// <list type="bullets">
+        /// <item>0 - the two glyphs match each other as they are provided;</item>
+        /// <item>90, 180 or 270 - the source glyph matches with target glyph if it is rotated by 90, 180 or 270
+        /// degree respectively in counter clockwise direction.</item>
+        /// </list></returns>
+        /// 
+        /// <exception cref="ArgumentException">Invalid glyph data array - must be square.</exception>
+        /// 
+        public static int CheckForMatching( byte[,] sourceGlyph, byte[,] targetGlyph )
+        {
+            int size = sourceGlyph.GetLength( 0 );
+
+            if ( size != sourceGlyph.GetLength( 1 ) )
+            {
+                throw new ArgumentException( "Invalid glyph data array - must be square.", "rawGlyphData" );
+            }
+
+            if ( targetGlyph.GetLength( 0 ) != targetGlyph.GetLength( 1 ) )
+            {
+                throw new ArgumentException( "Invalid glyph data array - must be square.", "targetGlyph" );
+            }
+
+            if ( size != targetGlyph.GetLength( 0 ) )
+                return -1;
+
+            int sizeM1 = size - 1;
+
+            bool match1 = true;
+            bool match2 = true;
+            bool match3 = true;
+            bool match4 = true;
+
+            for ( int i = 0; i < size; i++ )
+            {
+                for ( int j = 0; j < size; j++ )
+                {
+                    byte value = sourceGlyph[i, j];
+
+                    // no rotation
+                    match1 &= ( value == targetGlyph[i, j] );
+                    // 180 deg
+                    match2 &= ( value == targetGlyph[sizeM1 - i, sizeM1 - j] );
+                    // 90 deg
+                    match3 &= ( value == targetGlyph[sizeM1 - j, i] );
+                    // 270 deg
+                    match4 &= ( value == targetGlyph[j, sizeM1 - i] );
+                }
+            }
+
+            if ( match1 )
+                return 0;
+            else if ( match2 )
+                return 180;
+            else if ( match3 )
+                return 90;
+            else if ( match4 )
+                return 270;
+
+            return -1;
+        }
+
+        /// <summary>
         /// Check if the specified glyph data are rotation invariant or not.
         /// </summary>
         /// 

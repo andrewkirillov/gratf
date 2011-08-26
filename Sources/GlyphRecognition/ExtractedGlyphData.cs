@@ -12,11 +12,12 @@ namespace AForge.Vision.GlyphRecognition
     using System.Text;
 
     using AForge;
+    using AForge.Math;
 
     /// <summary>
     /// Information about the glyph extracted from an image using <see cref="GlyphRecognizer"/>.
     /// </summary>
-    public class ExtractedGlyphData
+    public class ExtractedGlyphData : ICloneable
     {
         /// <summary>
         /// Quadrilateral of the raw glyph detected (see <see cref="RawData"/>). First point
@@ -46,7 +47,7 @@ namespace AForge.Vision.GlyphRecognition
         /// </summary>
         ///
         /// <remarks><para>This property is set by <see cref="GlyphRecognizer"/> in the case if
-        /// <see cref="RawData"/> matches (see <see cref="Glyph.CheckForMatching"/>) to any of the glyphs
+        /// <see cref="RawData"/> matches (see <see cref="Glyph.CheckForMatching(byte[,])"/>) to any of the glyphs
         /// in the specified glyphs' database (see <see cref="GlyphRecognizer.GlyphDatabase"/>. If a match is found
         /// then this property is set to the matching glyph. Otherwise it is set to <see langword="null"/>.
         /// </para></remarks>
@@ -93,6 +94,29 @@ namespace AForge.Vision.GlyphRecognition
             Quadrilateral = quadrilateral;
             RawData = rawData;
             Confidence = confidence;
+        }
+
+        /// <summary>
+        /// Clone the object by making its exact copy.
+        /// </summary>
+        /// 
+        /// <returns>Returns clone of the object.</returns>
+        /// 
+        public object Clone( )
+        {
+            ExtractedGlyphData clone = new ExtractedGlyphData(
+                new List<IntPoint>( Quadrilateral ), (byte[,]) RawData.Clone( ), Confidence );
+
+            if ( recognizedGlyph != null )
+            {
+                clone.RecognizedGlyph = (Glyph) recognizedGlyph.Clone( );
+            }
+            if ( recognizedQuadrilateral != null )
+            {
+                clone.RecognizedQuadrilateral = new List<IntPoint>( recognizedQuadrilateral );
+            }
+
+            return clone;
         }
     }
 }

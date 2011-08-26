@@ -193,13 +193,13 @@ namespace AForge.Vision.GlyphRecognition
         /// 
         /// <param name="rawGlyphData">Raw glyph data to recognize.</param>
         /// <param name="rotation">Contains rotation angle of the match on success (0, 90, 180 or 270) -
-        /// see <see cref="Glyph.CheckForMatching"/>. In the case of no matching is found the value is
+        /// see <see cref="Glyph.CheckForMatching(byte[,])"/>. In the case of no matching is found the value is
         /// assigned to -1.</param>
         /// 
         /// <returns>Returns a glyph from the database which matches the specified raw glyph data. If there is
         /// no matching found, then <see langword="null"/> is returned.</returns>
         /// 
-        /// <remarks><para>The method searches for a glyph in the database which matches (see <see cref="Glyph.CheckForMatching"/>)
+        /// <remarks><para>The method searches for a glyph in the database which matches (see <see cref="Glyph.CheckForMatching(byte[,])"/>)
         /// the specified raw glyph data.</para></remarks>
         /// 
         public Glyph RecognizeGlyph( byte[,] rawGlyphData, out int rotation )

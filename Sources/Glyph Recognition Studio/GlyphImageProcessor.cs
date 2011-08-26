@@ -22,6 +22,8 @@ namespace GlyphRecognitionStudio
     {
         // glyph recognizer to use for glyph recognition in video
         private GlyphRecognizer recognizer = new GlyphRecognizer( 5 );
+        // glyph tracker to track position of glyphs
+        private GlyphTracker glyphTracker = new GlyphTracker( );
 
         // quadrilateral transformation used to put image in place of glyph
         private BackwardQuadrilateralTransformation quadrilateralTransformation = new BackwardQuadrilateralTransformation( );
@@ -66,6 +68,7 @@ namespace GlyphRecognitionStudio
             {
                 // get list of recognized glyphs
                 List<ExtractedGlyphData> glyphs = recognizer.FindGlyphs( bitmap );
+                List<int> glyphIDs = glyphTracker.IdentifyGlyphs( glyphs );
 
                 if ( glyphs.Count > 0 )
                 {
@@ -73,36 +76,54 @@ namespace GlyphRecognitionStudio
                          ( visualizationType == VisualizationType.Name ) )
                     {
                         Graphics g = Graphics.FromImage( bitmap );
+                        int i = 0;
 
                         // highlight each found glyph
                         foreach ( ExtractedGlyphData glyphData in glyphs )
                         {
+                            List<IntPoint> glyphPoints = ( glyphData.RecognizedGlyph == null ) ?
+                                glyphData.Quadrilateral : glyphData.RecognizedQuadrilateral;
+
                             Pen pen = new Pen( ( ( glyphData.RecognizedGlyph == null ) || ( glyphData.RecognizedGlyph.UserData == null ) ) ?
                                 Color.Red : ( (GlyphVisualizationData) glyphData.RecognizedGlyph.UserData).Color, 3 );
 
                             // highlight border
-                            g.DrawPolygon( pen, ToPointsArray( glyphData.Quadrilateral ) );
+                            g.DrawPolygon( pen, ToPointsArray( glyphPoints ) );
 
-                            // show glyph's name
-                            if ( ( visualizationType == VisualizationType.Name ) && (  glyphData.RecognizedGlyph != null ) )
+                            string glyphTitle = null;
+
+                            // prepare glyph's title
+                            if ( ( visualizationType == VisualizationType.Name ) && ( glyphData.RecognizedGlyph != null ) )
+                            {
+                                glyphTitle = string.Format( "{0}: {1}",
+                                    glyphIDs[i], glyphData.RecognizedGlyph.Name );
+                            }
+                            else
+                            {
+                                glyphTitle = string.Format( "Tracking ID: {0}", glyphIDs[i] );
+                            }
+
+                            // show glyph's title
+                            if ( !string.IsNullOrEmpty( glyphTitle ) )
                             {
                                 // get glyph's center point
                                 IntPoint minXY, maxXY;
-                                PointsCloud.GetBoundingRectangle( glyphData.Quadrilateral, out minXY, out maxXY );
+                                PointsCloud.GetBoundingRectangle( glyphPoints, out minXY, out maxXY );
                                 IntPoint center = ( minXY + maxXY ) / 2;
 
                                 // glyph's name size
-                                SizeF nameSize = g.MeasureString( glyphData.RecognizedGlyph.Name, defaultFont );
+                                SizeF nameSize = g.MeasureString( glyphTitle, defaultFont );
 
                                 // paint the name
                                 Brush brush = new SolidBrush( pen.Color);
 
-                                g.DrawString( glyphData.RecognizedGlyph.Name, defaultFont, brush,
+                                g.DrawString( glyphTitle, defaultFont, brush,
                                     new System.Drawing.Point( center.X - (int) nameSize.Width / 2, center.Y - (int) nameSize.Height / 2 ) );
 
                                 brush.Dispose( );
                             }
 
+                            i++;
                             pen.Dispose( );
                         }
                     }
@@ -142,6 +163,12 @@ namespace GlyphRecognitionStudio
                     }
                 }
             }
+        }
+
+        // Reset glyph processor to initial state
+        public void Reset( )
+        {
+            glyphTracker.Reset( );
         }
 
         #region Helper methods

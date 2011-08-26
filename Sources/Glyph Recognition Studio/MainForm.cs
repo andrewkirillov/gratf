@@ -171,6 +171,9 @@ namespace GlyphRecognitionStudio
             // set busy cursor
             this.Cursor = Cursors.WaitCursor;
 
+            // reset glyph processor
+            imageProcessor.Reset( );            
+
             // stop current video source
             videoSourcePlayer.SignalToStop( );
             videoSourcePlayer.WaitForStop( );
