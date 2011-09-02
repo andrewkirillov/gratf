@@ -145,7 +145,7 @@ Objects:  {
             Property: "QuaternionInterpolate", "bool", "",0
             Property: "Visibility", "Visibility", "A+",1
             Property: "Lcl Translation", "Lcl Translation", "A+",0,0,0
-            Property: "Lcl Rotation", "Lcl Rotation", "A+",90,0,0
+            Property: "Lcl Rotation", "Lcl Rotation", "A+",0,0,0
             Property: "Lcl Scaling", "Lcl Scaling", "A+",1,1,1
             Property: "RotationOffset", "Vector3D", "",0,0,0
             Property: "RotationPivot", "Vector3D", "",0,0,0
