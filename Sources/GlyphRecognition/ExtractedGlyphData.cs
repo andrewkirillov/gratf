@@ -82,6 +82,35 @@ namespace AForge.Vision.GlyphRecognition
         private List<IntPoint> recognizedQuadrilateral;
 
         /// <summary>
+        /// Glyphs transformation matrix.
+        /// </summary>
+        /// 
+        /// <remarks><para>The property provides real world glyph's transformation, which is
+        /// estimated by <see cref="GlyphTracker.TrackGlyphs">glyph tracking routine</see>.</para>
+        /// </remarks>
+        /// 
+        public Matrix4x4 TransformationMatrix
+        {
+            get { return transformationMatrix; }
+            internal set { transformationMatrix = value; }
+        }
+        private Matrix4x4 transformationMatrix;
+
+        /// <summary>
+        /// Check if glyph pose was estimated or not.
+        /// </summary>
+        /// 
+        /// <remarks><para>The property tells if <see cref="TransformationMatrix"/> property
+        /// was calculated for this glyph or not.</para></remarks>
+        ///
+        public bool IsTransformationDetected
+        {
+            get { return isTransformationDetected; }
+            internal set { isTransformationDetected = value; }
+        }
+        private bool isTransformationDetected = false;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ExtractedGlyphData"/> class.
         /// </summary>
         /// 

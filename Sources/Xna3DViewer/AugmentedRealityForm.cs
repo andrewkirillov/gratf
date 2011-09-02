@@ -13,6 +13,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using AForge.Math;
+
 namespace Xna3DViewer
 {
     public partial class AugmentedRealityForm : Form
@@ -26,21 +28,22 @@ namespace Xna3DViewer
         }
 
         // Update AR form displaying video and models
-        public void UpdateVideoFrame( Bitmap newFrame )
+        public void UpdateScene( Bitmap newFrame, List<VirtualModel> modelsToDisplay )
         {
-            if ( ( newFrame.Width != viewerWidth ) || ( newFrame.Height != viewerHeight ) )
+            if ( ( newFrame != null ) &&
+               ( ( newFrame.Width != viewerWidth ) || ( newFrame.Height != viewerHeight ) ) )
             {
                 viewerWidth  = newFrame.Width;
                 viewerHeight = newFrame.Height;
                 ResizeViewer( );
             }
 
-            sceneViewerControl.UpdateScene( newFrame );
+            sceneViewerControl.UpdateScene( newFrame, modelsToDisplay );
         }
 
         delegate void ResizeViewerHandler( );
 
-        // Resize viewer control so if fits video and is centered in the form
+        // Resize viewer control so it fits video and is centered in the form
         private void ResizeViewer( )
         {
             if ( InvokeRequired )

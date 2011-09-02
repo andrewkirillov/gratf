@@ -62,13 +62,17 @@ namespace GlyphRecognitionStudio
         private VisualizationType visualizationType = VisualizationType.Name;
 
         // Process image searching for glyphs and highlighting them
-        public void ProcessImage( Bitmap bitmap )
+        public List<ExtractedGlyphData> ProcessImage( Bitmap bitmap )
         {
+            List<ExtractedGlyphData> glyphs = new List<ExtractedGlyphData>( );
+
             lock ( sync )
             {
+                glyphTracker.ImageSize = bitmap.Size;
+
                 // get list of recognized glyphs
-                List<ExtractedGlyphData> glyphs = recognizer.FindGlyphs( bitmap );
-                List<int> glyphIDs = glyphTracker.IdentifyGlyphs( glyphs );
+                glyphs.AddRange( recognizer.FindGlyphs( bitmap ) );
+                List<int> glyphIDs = glyphTracker.TrackGlyphs( glyphs );
 
                 if ( glyphs.Count > 0 )
                 {
@@ -163,6 +167,8 @@ namespace GlyphRecognitionStudio
                     }
                 }
             }
+
+            return glyphs;
         }
 
         // Reset glyph processor to initial state

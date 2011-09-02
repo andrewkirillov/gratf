@@ -14,6 +14,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 
+using AForge.Math;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Vision.GlyphRecognition;
@@ -666,13 +667,38 @@ namespace GlyphRecognitionStudio
             {
                 lock ( sync )
                 {
-                    imageProcessor.ProcessImage( image );
+                    List<ExtractedGlyphData> glyphs = imageProcessor.ProcessImage( image );
 
                     if ( arForm != null )
                     {
-                        arForm.UpdateVideoFrame( image );
+                        List<VirtualModel> modelsToDisplay = new List<VirtualModel>( );
+
+                        foreach ( ExtractedGlyphData glyph in glyphs )
+                        {
+                            if ( ( glyph.RecognizedGlyph != null ) &&
+                                 ( glyph.RecognizedGlyph.UserData != null ) &&
+                                 ( glyph.RecognizedGlyph.UserData is GlyphVisualizationData ) &&
+                                 ( glyph.IsTransformationDetected ) )
+                            {
+                                modelsToDisplay.Add( new VirtualModel(
+                                    ( (GlyphVisualizationData) glyph.RecognizedGlyph.UserData ).ModelName,
+                                    glyph.TransformationMatrix,
+                                    113 ) );
+                            }
+                        }
+
+                        arForm.UpdateScene( image, modelsToDisplay );
                     }
                 }
+            }
+        }
+
+        // On finishing video playing
+        private void videoSourcePlayer_PlayingFinished( object sender, ReasonToFinishPlaying reason )
+        {
+            if ( arForm != null )
+            {
+                arForm.UpdateScene( null, new List<VirtualModel>( ) );
             }
         }
 
@@ -686,6 +712,15 @@ namespace GlyphRecognitionStudio
             if ( imageProcessor.VisualizationType == VisualizationType.Model )
             {
                 imageProcessor.VisualizationType = VisualizationType.Name;
+            }
+        }
+
+        private void optionsToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            OptionsForm optionsForm = new OptionsForm( );
+
+            if ( optionsForm.ShowDialog( ) == DialogResult.OK )
+            {
             }
         }
     }

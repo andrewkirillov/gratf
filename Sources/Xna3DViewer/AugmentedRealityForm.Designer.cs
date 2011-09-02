@@ -33,7 +33,7 @@
             // 
             // sceneViewerControl
             // 
-            this.sceneViewerControl.Location = new System.Drawing.Point( 10, 10 );
+            this.sceneViewerControl.Location = new System.Drawing.Point( 162, 117 );
             this.sceneViewerControl.Name = "sceneViewerControl";
             this.sceneViewerControl.Size = new System.Drawing.Size( 320, 240 );
             this.sceneViewerControl.TabIndex = 0;
@@ -42,9 +42,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size( 340, 262 );
+            this.ClientSize = new System.Drawing.Size( 644, 484 );
             this.Controls.Add( this.sceneViewerControl );
             this.Name = "AugmentedRealityForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Augmented Reality";
             this.Resize += new System.EventHandler( this.AugmentedRealityForm_Resize );
             this.ResumeLayout( false );
