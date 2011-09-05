@@ -823,10 +823,10 @@ namespace GlyphRecognitionStudio
                 float xInches = ( (float) e.PageBounds.Width / 100 - glyphSizeInches ) / 2;
                 float yInches = ( (float) e.PageBounds.Height / 100 - glyphSizeInches ) / 2;
 
-//                int xPixels = (int) ( xInches * e.Graphics.VisibleClipBounds.Width / ( e.PageBounds.Width / 100 ) );
-//                int yPixels = (int) ( yInches * e.Graphics.VisibleClipBounds.Height / ( e.PageBounds.Height / 100 ) );
+                int xPixels = (int) ( xInches * e.Graphics.VisibleClipBounds.Width / ( e.PageBounds.Width / 100 ) );
+                int yPixels = (int) ( yInches * e.Graphics.VisibleClipBounds.Height / ( e.PageBounds.Height / 100 ) );
 
-                e.Graphics.DrawImage( glyphImage, 0, 0 );
+                e.Graphics.DrawImage( glyphImage, xPixels, yPixels );
             }
         }
     }
