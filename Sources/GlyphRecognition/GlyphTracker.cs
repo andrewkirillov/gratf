@@ -55,7 +55,7 @@ namespace AForge.Vision.GlyphRecognition
         // camera's effective focal length
         private float cameraFocalLength = 640;
         // real size of glyphs
-        private float glyphSize = 113;
+        private float glyphSize = 0;
 
         private CoplanarPosit posit;
 
@@ -118,7 +118,7 @@ namespace AForge.Vision.GlyphRecognition
         /// <para>If the property is set to <b>0</b>, then glyphs' pose estimation will not
         /// be performed.</para>
         /// 
-        /// <para>Default value is set to <b>0</b>.</para>
+        /// <para>Default value is set to <b>0</b>. The property can not be negative.</para>
         /// </remarks>
         /// 
         public float GlyphSize
@@ -126,7 +126,7 @@ namespace AForge.Vision.GlyphRecognition
             get { return glyphSize; }
             set
             {
-                glyphSize = value;
+                glyphSize = Math.Max( 0, value );
                 CreatePosit( );
             }
         }

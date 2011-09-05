@@ -21,6 +21,7 @@ namespace GlyphRecognitionStudio
         // list of configuration options
         private Dictionary<string, string> options = new Dictionary<string, string>( );
 
+        private const string configFolderName = "AForge";
         private const string baseConfigFileName = "glyph recognition studio.cfg";
         private string configFileName = null;
         bool isSuccessfullyLoaded = false;
@@ -45,7 +46,8 @@ namespace GlyphRecognitionStudio
         {
             configFileName = Path.Combine(
                 Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ),
-                baseConfigFileName );
+                configFolderName );
+            configFileName = Path.Combine( configFileName, baseConfigFileName );
         }
 
         // Get instance of the configuration storage
@@ -85,40 +87,37 @@ namespace GlyphRecognitionStudio
         {
             lock ( sync )
             {
-                try
-                {
-                    // open file
-                    FileStream fs = new FileStream( configFileName, FileMode.Create );
-                    // create XML writer
-                    XmlTextWriter xmlOut = new XmlTextWriter( fs, Encoding.UTF8 );
+                // make sure directory exists
+                Directory.CreateDirectory( Path.GetDirectoryName( configFileName ) );
 
-                    // use indenting for readability
-                    xmlOut.Formatting = Formatting.Indented;
+                // open file
+                FileStream fs = new FileStream( configFileName, FileMode.Create );
+                // create XML writer
+                XmlTextWriter xmlOut = new XmlTextWriter( fs, Encoding.UTF8 );
 
-                    // start document
-                    xmlOut.WriteStartDocument( );
-                    xmlOut.WriteComment( "Glyph Recognition Studio configuration file" );
+                // use indenting for readability
+                xmlOut.Formatting = Formatting.Indented;
 
-                    // main node
-                    xmlOut.WriteStartElement( mainTag );
+                // start document
+                xmlOut.WriteStartDocument( );
+                xmlOut.WriteComment( "Glyph Recognition Studio configuration file" );
 
-                    // save configuration options
-                    xmlOut.WriteStartElement( optionsTag );
-                    SaveOptions( xmlOut );
-                    xmlOut.WriteEndElement( );
+                // main node
+                xmlOut.WriteStartElement( mainTag );
 
-                    // save glyph databases
-                    xmlOut.WriteStartElement( glyphDatabasesTag );
-                    dbs.Save( xmlOut );
-                    xmlOut.WriteEndElement( );
+                // save configuration options
+                xmlOut.WriteStartElement( optionsTag );
+                SaveOptions( xmlOut );
+                xmlOut.WriteEndElement( );
 
-                    xmlOut.WriteEndElement( ); // end of main node
-                    // close file
-                    xmlOut.Close( );
-                }
-                catch
-                {
-                }
+                // save glyph databases
+                xmlOut.WriteStartElement( glyphDatabasesTag );
+                dbs.Save( xmlOut );
+                xmlOut.WriteEndElement( );
+
+                xmlOut.WriteEndElement( ); // end of main node
+                // close file
+                xmlOut.Close( );
             }
         }
 

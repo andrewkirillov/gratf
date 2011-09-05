@@ -61,6 +61,20 @@ namespace GlyphRecognitionStudio
         }
         private VisualizationType visualizationType = VisualizationType.Name;
 
+        // Effective focal length of camera
+        public float CameraFocalLength
+        {
+            get { return glyphTracker.CameraFocalLength; }
+            set { glyphTracker.CameraFocalLength = value; }
+        }
+
+        // Real size of glyphs
+        public float GlyphSize
+        {
+            get { return glyphTracker.GlyphSize; }
+            set { glyphTracker.GlyphSize = value; }
+        }
+
         // Process image searching for glyphs and highlighting them
         public List<ExtractedGlyphData> ProcessImage( Bitmap bitmap )
         {

@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
 
 using AForge.Math;
 using AForge.Video;
@@ -37,6 +38,7 @@ namespace GlyphRecognitionStudio
 
         private AugmentedRealityForm arForm = null;
         private GlyphImageProcessor imageProcessor = new GlyphImageProcessor( );
+        private bool autoDetectFocalLength = true;
 
         // object used for synchronization
         private object sync = new object( );
@@ -51,6 +53,10 @@ namespace GlyphRecognitionStudio
         private const string mainFormHeightOption = "MainFormHeight";
         private const string mainFormStateOption = "MainFormState";
         private const string mainSplitterOption = "MainSplitter";
+        private const string glyphSizeOption = "GlyphSize";
+        private const string focalLengthOption = "FocalLength";
+        private const string detectFocalLengthOption = "DetectFocalLength";
+        private const string autoDetectFocalLengthOption = "AutoDetectFocalLength";
         #endregion
 
         // Class constructor
@@ -98,6 +104,13 @@ namespace GlyphRecognitionStudio
                         config.GetConfigurationOption( mainFormStateOption ) );
 
                     splitContainer.SplitterDistance = int.Parse( config.GetConfigurationOption( mainSplitterOption ) );
+
+                    autoDetectFocalLength = bool.Parse( config.GetConfigurationOption( autoDetectFocalLengthOption ) );
+                    imageProcessor.GlyphSize = float.Parse( config.GetConfigurationOption( glyphSizeOption ) );
+                    if ( !autoDetectFocalLength )
+                    {
+                        imageProcessor.CameraFocalLength = float.Parse( config.GetConfigurationOption( focalLengthOption ) );
+                    }
                 }
                 catch
                 {
@@ -124,7 +137,20 @@ namespace GlyphRecognitionStudio
             }
 
             config.SetConfigurationOption( activeDatabaseOption, activeGlyphDatabaseName );
-            config.Save( glyphDatabases );
+
+            config.SetConfigurationOption( autoDetectFocalLengthOption, autoDetectFocalLength.ToString( ) );
+            config.SetConfigurationOption( focalLengthOption, imageProcessor.CameraFocalLength.ToString( ) );
+            config.SetConfigurationOption( glyphSizeOption, imageProcessor.GlyphSize.ToString( ) );
+
+            try
+            {
+                config.Save( glyphDatabases );
+            }
+            catch ( IOException ex )
+            {
+                MessageBox.Show( "Failed saving confguration file.\r\n\r\n" + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            }
 
             if ( videoSourcePlayer.VideoSource != null )
             {
@@ -715,12 +741,24 @@ namespace GlyphRecognitionStudio
             }
         }
 
+        // Show configuration options
         private void optionsToolStripMenuItem_Click( object sender, EventArgs e )
         {
             OptionsForm optionsForm = new OptionsForm( );
 
+            optionsForm.AutoDetectFocalLength = autoDetectFocalLength;
+            optionsForm.CameraFocalLength = imageProcessor.CameraFocalLength;
+            optionsForm.GlyphSize = imageProcessor.GlyphSize;
+
             if ( optionsForm.ShowDialog( ) == DialogResult.OK )
             {
+                imageProcessor.GlyphSize = optionsForm.GlyphSize;
+                autoDetectFocalLength = optionsForm.AutoDetectFocalLength;
+
+                if ( !autoDetectFocalLength )
+                {
+                    imageProcessor.CameraFocalLength = optionsForm.CameraFocalLength;
+                }
             }
         }
     }
