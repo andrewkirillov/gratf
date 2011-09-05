@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -77,6 +78,12 @@ namespace GlyphRecognitionStudio
         private void exitToolStripMenuItem_Click( object sender, EventArgs e )
         {
             Application.Exit( );
+        }
+
+        // Show standard error bot
+        private void ShowErrorBox( string message )
+        {
+            MessageBox.Show( message, ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
         }
 
         // On loading of the main form
@@ -148,8 +155,7 @@ namespace GlyphRecognitionStudio
             }
             catch ( IOException ex )
             {
-                MessageBox.Show( "Failed saving confguration file.\r\n\r\n" + ex.Message,
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                ShowErrorBox( "Failed saving confguration file.\r\n\r\n" + ex.Message );
             }
 
             if ( videoSourcePlayer.VideoSource != null )
@@ -269,8 +275,7 @@ namespace GlyphRecognitionStudio
                 }
                 catch
                 {
-                    MessageBox.Show( string.Format( "A glyph database with the name '{0}' already exists", name ),
-                        ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    ShowErrorBox( string.Format( "A glyph database with the name '{0}' already exists.", name ) );
                 }
             }
         }
@@ -289,7 +294,9 @@ namespace GlyphRecognitionStudio
             newGlyphToolStripMenuItem.Enabled = ( activeGlyphDatabase != null );
 
             editGlyphToolStripMenuItem.Enabled =
-            deleteGlyphToolStripMenuItem.Enabled = ( activeGlyphDatabase != null ) && ( glyphList.SelectedIndices.Count != 0 );
+            deleteGlyphToolStripMenuItem.Enabled = 
+            printPreviewToolStripMenuItem.Enabled =
+            printToolStripMenuItem.Enabled = ( activeGlyphDatabase != null ) && ( glyphList.SelectedIndices.Count != 0 );
         }
 
         // Add new glyph to the active collection
@@ -318,7 +325,7 @@ namespace GlyphRecognitionStudio
                         }
 
                         // create an icon for it
-                        glyphsImageList.Images.Add( glyph.Name, CreateIconForGlyph( glyph ) );
+                        glyphsImageList.Images.Add( glyph.Name, CreateGlyphIcon( glyph ) );
 
                         // add it to list view
                         ListViewItem lvi = glyphList.Items.Add( glyph.Name );
@@ -326,8 +333,7 @@ namespace GlyphRecognitionStudio
                     }
                     catch
                     {
-                        MessageBox.Show( string.Format( "A glyph with the name '{0}' already exists in the database", glyph.Name ),
-                            ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                        ShowErrorBox( string.Format( "A glyph with the name '{0}' already exists in the database.", glyph.Name ) );
                     }
                 }
             }
@@ -377,15 +383,14 @@ namespace GlyphRecognitionStudio
 
                         // remove old icon and add new one
                         glyphsImageList.Images.RemoveByKey( glyphNameInEditor );
-                        glyphsImageList.Images.Add( glyph.Name, CreateIconForGlyph( glyph ) );
+                        glyphsImageList.Images.Add( glyph.Name, CreateGlyphIcon( glyph ) );
 
                         // restore item's icon
                         lvi.ImageKey = glyph.Name;
                     }
                     catch
                     {
-                        MessageBox.Show( string.Format( "A glyph with the name '{0}' already exists in the database", glyph.Name ),
-                            ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                        ShowErrorBox( string.Format( "A glyph with the name '{0}' already exists in the database.", glyph.Name ) );
                     }
                 }
             }
@@ -403,8 +408,7 @@ namespace GlyphRecognitionStudio
 
                 if ( ( recognizedGlyph != null ) && ( recognizedGlyph.Name != glyphNameInEditor ) )
                 {
-                    MessageBox.Show( "The database already contains a glyph which looks the same as it is or after rotation.",
-                        ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    ShowErrorBox( "The database already contains a glyph which looks the same as it is or after rotation." );
                     return false;
                 }
             }
@@ -474,7 +478,7 @@ namespace GlyphRecognitionStudio
 
                 if ( newName == string.Empty )
                 {
-                    MessageBox.Show( "Collection name cannot be emtpy", ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    ShowErrorBox( "Collection name cannot be emtpy." );
                     e.CancelEdit = true;
                     return;
                 }
@@ -486,7 +490,7 @@ namespace GlyphRecognitionStudio
                     {
                         if ( glyphDatabases.GetDatabaseNames( ).Contains( newName ) )
                         {
-                            MessageBox.Show( "A collection with such name already exists", ErrorBoxTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                            ShowErrorBox( "A collection with such name already exists." );
                             e.CancelEdit = true;
                             return;
                         }
@@ -644,7 +648,7 @@ namespace GlyphRecognitionStudio
                 foreach ( Glyph glyph in activeGlyphDatabase )
                 {
                     // create icon for the glyph first
-                    glyphsImageList.Images.Add( glyph.Name, CreateIconForGlyph( glyph ) );
+                    glyphsImageList.Images.Add( glyph.Name, CreateGlyphIcon( glyph ) );
 
                     // create glyph's list view item
                     ListViewItem lvi = glyphList.Items.Add( glyph.Name );
@@ -654,18 +658,23 @@ namespace GlyphRecognitionStudio
         }
 
         // Create icon for a glyph
-        private Image CreateIconForGlyph( Glyph glyph )
+        private Bitmap CreateGlyphIcon( Glyph glyph )
         {
-            Bitmap bitmap = new Bitmap( 32, 32, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
+            return CreateGlyphImage( glyph, 32 );
+        }
 
-            int cellSize = 32 / glyph.Size;
+        private Bitmap CreateGlyphImage( Glyph glyph, int width )
+        {
+            Bitmap bitmap = new Bitmap( width, width, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
+
+            int cellSize = width / glyph.Size;
             int glyphSize = glyph.Size;
 
-            for ( int i = 0; i < 32; i++ )
+            for ( int i = 0; i < width; i++ )
             {
                 int yCell = i / cellSize;
 
-                for ( int j = 0; j < 32; j++ )
+                for ( int j = 0; j < width; j++ )
                 {
                     int xCell = j / cellSize;
 
@@ -677,7 +686,7 @@ namespace GlyphRecognitionStudio
                     else
                     {
                         // set pixel to black or white depending on glyph value
-                        bitmap.SetPixel( j, i, 
+                        bitmap.SetPixel( j, i,
                             ( glyph.Data[yCell, xCell] == 0 ) ? Color.Black : Color.White );
                     }
                 }
@@ -759,6 +768,65 @@ namespace GlyphRecognitionStudio
                 {
                     imageProcessor.CameraFocalLength = optionsForm.CameraFocalLength;
                 }
+            }
+        }
+
+        // Print selected glyph
+        private void printToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                printDialog.Document = printDocument;
+                if ( printDialog.ShowDialog( ) == DialogResult.OK )
+                {
+                    printDocument.Print( );
+                }
+            }
+            catch ( InvalidPrinterException ex )
+            {
+                ShowErrorBox( "Failed accessing printer device.\r\n\r\n" + ex.Message );
+            }
+        }
+
+        // Preview printing of the selected glyph
+        private void printPreviewToolStripMenuItem_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                printPreviewDialog.Document = printDocument;
+                printPreviewDialog.ShowDialog( );
+            }
+            catch ( InvalidPrinterException ex )
+            {
+                ShowErrorBox( "Failed accessing printer device.\r\n\r\n" + ex.Message );
+            }
+        }
+
+        // Glyph's printing routine
+        private void printDocument_PrintPage( object sender, System.Drawing.Printing.PrintPageEventArgs e )
+        {
+            if ( ( activeGlyphDatabase != null ) && ( glyphList.SelectedIndices.Count != 0 ) )
+            {
+                // get selected item and its glyph ...
+                ListViewItem lvi = glyphList.SelectedItems[0];
+                Glyph glyph = activeGlyphDatabase[lvi.Text];
+
+                // convert glyph size from mm to inches
+                float glyphSizeInches = imageProcessor.GlyphSize / 25.4f;
+                // calculate image width at 96 DPI resolution
+                int imageWidth = (int) ( glyphSizeInches * 96 );
+
+                // get glyph's image
+                Bitmap glyphImage = CreateGlyphImage( glyph, imageWidth );
+                glyphImage.SetResolution( 96, 96 );
+
+                float xInches = ( (float) e.PageBounds.Width / 100 - glyphSizeInches ) / 2;
+                float yInches = ( (float) e.PageBounds.Height / 100 - glyphSizeInches ) / 2;
+
+//                int xPixels = (int) ( xInches * e.Graphics.VisibleClipBounds.Width / ( e.PageBounds.Width / 100 ) );
+//                int yPixels = (int) ( yInches * e.Graphics.VisibleClipBounds.Height / ( e.PageBounds.Height / 100 ) );
+
+                e.Graphics.DrawImage( glyphImage, 0, 0 );
             }
         }
     }

@@ -73,6 +73,12 @@
             this.timer = new System.Windows.Forms.Timer( this.components );
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog( );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator( );
+            this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+            this.printPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem( );
+            this.printPreviewDialog = new System.Windows.Forms.PrintPreviewDialog( );
+            this.printDialog = new System.Windows.Forms.PrintDialog( );
+            this.printDocument = new System.Drawing.Printing.PrintDocument( );
             this.mainMenu.SuspendLayout( );
             this.statusStrip.SuspendLayout( );
             this.mainPanel.SuspendLayout( );
@@ -320,29 +326,32 @@
             this.glyphCollectionContextMenu.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.newGlyphToolStripMenuItem,
             this.editGlyphToolStripMenuItem,
-            this.deleteGlyphToolStripMenuItem} );
+            this.deleteGlyphToolStripMenuItem,
+            this.toolStripMenuItem4,
+            this.printToolStripMenuItem,
+            this.printPreviewToolStripMenuItem} );
             this.glyphCollectionContextMenu.Name = "glyphCollectionContextMenu";
-            this.glyphCollectionContextMenu.Size = new System.Drawing.Size( 108, 70 );
+            this.glyphCollectionContextMenu.Size = new System.Drawing.Size( 144, 120 );
             this.glyphCollectionContextMenu.Opening += new System.ComponentModel.CancelEventHandler( this.glyphCollectionContextMenu_Opening );
             // 
             // newGlyphToolStripMenuItem
             // 
             this.newGlyphToolStripMenuItem.Name = "newGlyphToolStripMenuItem";
-            this.newGlyphToolStripMenuItem.Size = new System.Drawing.Size( 107, 22 );
+            this.newGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
             this.newGlyphToolStripMenuItem.Text = "&New";
             this.newGlyphToolStripMenuItem.Click += new System.EventHandler( this.newGlyphToolStripMenuItem_Click );
             // 
             // editGlyphToolStripMenuItem
             // 
             this.editGlyphToolStripMenuItem.Name = "editGlyphToolStripMenuItem";
-            this.editGlyphToolStripMenuItem.Size = new System.Drawing.Size( 107, 22 );
+            this.editGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
             this.editGlyphToolStripMenuItem.Text = "&Edit";
             this.editGlyphToolStripMenuItem.Click += new System.EventHandler( this.editGlyphToolStripMenuItem_Click );
             // 
             // deleteGlyphToolStripMenuItem
             // 
             this.deleteGlyphToolStripMenuItem.Name = "deleteGlyphToolStripMenuItem";
-            this.deleteGlyphToolStripMenuItem.Size = new System.Drawing.Size( 107, 22 );
+            this.deleteGlyphToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
             this.deleteGlyphToolStripMenuItem.Text = "&Delete";
             this.deleteGlyphToolStripMenuItem.Click += new System.EventHandler( this.deleteGlyphToolStripMenuItem_Click );
             // 
@@ -464,6 +473,43 @@
             this.toolTip.BackColor = System.Drawing.Color.FromArgb( ( (int) ( ( (byte) ( 192 ) ) ) ), ( (int) ( ( (byte) ( 255 ) ) ) ), ( (int) ( ( (byte) ( 192 ) ) ) ) );
             this.toolTip.ToolTipTitle = "Hint:";
             // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size( 149, 6 );
+            // 
+            // printToolStripMenuItem
+            // 
+            this.printToolStripMenuItem.Name = "printToolStripMenuItem";
+            this.printToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.printToolStripMenuItem.Text = "&Print";
+            this.printToolStripMenuItem.Click += new System.EventHandler( this.printToolStripMenuItem_Click );
+            // 
+            // printPreviewToolStripMenuItem
+            // 
+            this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
+            this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size( 152, 22 );
+            this.printPreviewToolStripMenuItem.Text = "Print Preview";
+            this.printPreviewToolStripMenuItem.Click += new System.EventHandler( this.printPreviewToolStripMenuItem_Click );
+            // 
+            // printPreviewDialog
+            // 
+            this.printPreviewDialog.AutoScrollMargin = new System.Drawing.Size( 0, 0 );
+            this.printPreviewDialog.AutoScrollMinSize = new System.Drawing.Size( 0, 0 );
+            this.printPreviewDialog.ClientSize = new System.Drawing.Size( 400, 300 );
+            this.printPreviewDialog.Enabled = true;
+            this.printPreviewDialog.Icon = ( (System.Drawing.Icon) ( resources.GetObject( "printPreviewDialog.Icon" ) ) );
+            this.printPreviewDialog.Name = "printPreviewDialog";
+            this.printPreviewDialog.Visible = false;
+            // 
+            // printDialog
+            // 
+            this.printDialog.UseEXDialog = true;
+            // 
+            // printDocument
+            // 
+            this.printDocument.PrintPage += new System.Drawing.Printing.PrintPageEventHandler( this.printDocument_PrintPage );
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
@@ -540,6 +586,12 @@
         private System.Windows.Forms.ToolStripMenuItem modelToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem printPreviewToolStripMenuItem;
+        private System.Windows.Forms.PrintPreviewDialog printPreviewDialog;
+        private System.Windows.Forms.PrintDialog printDialog;
+        private System.Drawing.Printing.PrintDocument printDocument;
     }
 }
 
