@@ -268,8 +268,8 @@ namespace AForge.Vision.GlyphRecognition
             else
             {
                 if ( ( glyph.RecognizedGlyph != null ) &&
-                     ( GetMaxCoordinateDiff( glyph.RecognizedQuadrilateral,
-                       trackedGlyphs[glyphID].Glyph.RecognizedQuadrilateral ) <= MaxGlyphShaking ) )
+                     ( !IsCoordinatesDifferenceSignificant( glyph.RecognizedQuadrilateral,
+                       trackedGlyphs[glyphID].Glyph.RecognizedQuadrilateral ) ) )
                 {
                     // correct coordinates of recognized glyphs to eliminate small noisy shaking
                     glyph.RecognizedQuadrilateral = trackedGlyphs[glyphID].Glyph.RecognizedQuadrilateral;
@@ -300,18 +300,24 @@ namespace AForge.Vision.GlyphRecognition
             prevRotation.Clear( );
         }
 
-        // Calculate maximum difference between coordinates of the specfied points
-        private static int GetMaxCoordinateDiff( List<IntPoint> points1, List<IntPoint> points2 )
+        // Check if difference between glyphs corners' coordinates is significant (more
+        // than caused by noise)
+        private static bool IsCoordinatesDifferenceSignificant( List<IntPoint> points1, List<IntPoint> points2 )
         {
-            int maxDiff = 0;
+            int significantDifferences = 0;
 
             for ( int i = 0, n = points1.Count; i < n; i++ )
             {
-                maxDiff = System.Math.Max( maxDiff, System.Math.Abs( points1[i].X - points2[i].X ) );
-                maxDiff = System.Math.Max( maxDiff, System.Math.Abs( points1[i].Y - points2[i].Y ) );
+                if ( ( System.Math.Abs( points1[i].X - points2[i].X ) > MaxGlyphShaking ) ||
+                     ( System.Math.Abs( points1[i].Y - points2[i].Y ) > MaxGlyphShaking ) )
+                {
+                    significantDifferences++;
+                }
             }
 
-            return maxDiff;
+            // if glyph starts moving/rotating, then at least two corners should change position.
+            // if only one changes, then it is caused by noise most probably
+            return ( significantDifferences > 1 );
         }
 
         // Estimate pose for of the given glyph
