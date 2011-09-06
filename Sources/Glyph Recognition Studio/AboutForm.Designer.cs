@@ -40,6 +40,7 @@
             this.label4 = new System.Windows.Forms.Label( );
             this.okButton = new System.Windows.Forms.Button( );
             this.pictureBox1 = new System.Windows.Forms.PictureBox( );
+            this.versionLabel = new System.Windows.Forms.Label( );
             ( (System.ComponentModel.ISupportInitialize) ( this.logoPictureBox ) ).BeginInit( );
             this.panel1.SuspendLayout( );
             ( (System.ComponentModel.ISupportInitialize) ( this.pictureBox1 ) ).BeginInit( );
@@ -77,16 +78,17 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point( 106, 70 );
+            this.label1.Font = new System.Drawing.Font( "Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 204 ) ) );
+            this.label1.Location = new System.Drawing.Point( 112, 70 );
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size( 163, 13 );
+            this.label1.Size = new System.Drawing.Size( 151, 13 );
             this.label1.TabIndex = 2;
-            this.label1.Text = "Glyph Recognition Studio v.1.0.0";
+            this.label1.Text = "Glyph Recognition Studio";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point( 40, 95 );
+            this.label2.Location = new System.Drawing.Point( 40, 115 );
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size( 295, 13 );
             this.label2.TabIndex = 3;
@@ -95,7 +97,7 @@
             // gratfLabel
             // 
             this.gratfLabel.AutoSize = true;
-            this.gratfLabel.Location = new System.Drawing.Point( 84, 110 );
+            this.gratfLabel.Location = new System.Drawing.Point( 84, 130 );
             this.gratfLabel.Name = "gratfLabel";
             this.gratfLabel.Size = new System.Drawing.Size( 206, 13 );
             this.gratfLabel.TabIndex = 19;
@@ -106,7 +108,7 @@
             // aforgeLabel
             // 
             this.aforgeLabel.AutoSize = true;
-            this.aforgeLabel.Location = new System.Drawing.Point( 91, 210 );
+            this.aforgeLabel.Location = new System.Drawing.Point( 91, 230 );
             this.aforgeLabel.Name = "aforgeLabel";
             this.aforgeLabel.Size = new System.Drawing.Size( 192, 13 );
             this.aforgeLabel.TabIndex = 25;
@@ -117,7 +119,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point( 104, 195 );
+            this.label3.Location = new System.Drawing.Point( 104, 215 );
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size( 166, 13 );
             this.label3.TabIndex = 24;
@@ -127,7 +129,7 @@
             // 
             this.mailLabel.ActiveLinkColor = System.Drawing.Color.MediumBlue;
             this.mailLabel.LinkColor = System.Drawing.Color.MediumBlue;
-            this.mailLabel.Location = new System.Drawing.Point( 102, 160 );
+            this.mailLabel.Location = new System.Drawing.Point( 102, 180 );
             this.mailLabel.Name = "mailLabel";
             this.mailLabel.Size = new System.Drawing.Size( 171, 23 );
             this.mailLabel.TabIndex = 23;
@@ -138,7 +140,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point( 81, 145 );
+            this.label4.Location = new System.Drawing.Point( 81, 165 );
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size( 212, 16 );
             this.label4.TabIndex = 22;
@@ -149,7 +151,7 @@
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.okButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.okButton.Location = new System.Drawing.Point( 150, 250 );
+            this.okButton.Location = new System.Drawing.Point( 150, 270 );
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size( 75, 23 );
             this.okButton.TabIndex = 21;
@@ -158,11 +160,20 @@
             // pictureBox1
             // 
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point( 15, 240 );
+            this.pictureBox1.Location = new System.Drawing.Point( 15, 260 );
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size( 344, 2 );
             this.pictureBox1.TabIndex = 20;
             this.pictureBox1.TabStop = false;
+            // 
+            // versionLabel
+            // 
+            this.versionLabel.Location = new System.Drawing.Point( 87, 85 );
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size( 200, 13 );
+            this.versionLabel.TabIndex = 26;
+            this.versionLabel.Text = "version";
+            this.versionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // AboutForm
             // 
@@ -170,7 +181,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.okButton;
-            this.ClientSize = new System.Drawing.Size( 374, 284 );
+            this.ClientSize = new System.Drawing.Size( 374, 304 );
+            this.Controls.Add( this.versionLabel );
             this.Controls.Add( this.aforgeLabel );
             this.Controls.Add( this.label3 );
             this.Controls.Add( this.mailLabel );
@@ -210,5 +222,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label versionLabel;
     }
 }
