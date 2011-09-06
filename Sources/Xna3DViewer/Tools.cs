@@ -38,5 +38,47 @@ namespace Xna3DViewer
 
             return texture;
         }
+
+        // Get Bitmap screenshot of specified XNA device
+        public static Bitmap BitmapFromDevice( GraphicsDevice device )
+        {
+            // get texture out of XNA device first
+            ResolveTexture2D deviceTexture = new ResolveTexture2D( device,
+                device.PresentationParameters.BackBufferWidth,
+                device.PresentationParameters.BackBufferHeight,
+                1, device.PresentationParameters.BackBufferFormat );
+            device.ResolveBackBuffer( deviceTexture );
+
+            // convert texture to bitmap
+            Bitmap bitmap = BitmapFromTexture( deviceTexture );
+
+            deviceTexture.Dispose( );
+
+            return bitmap;
+        }
+
+        // Convert XNA texture to GDI+ Bitmap
+        public static Bitmap BitmapFromTexture( Texture2D texture )
+        {
+            int width  = texture.Width;
+            int height = texture.Height;
+
+            // create bitmap and lock it
+            Bitmap bitmap = new Bitmap( width, height, PixelFormat.Format32bppArgb );
+            BitmapData data = bitmap.LockBits( new Rectangle( 0, 0, width, height ),
+                ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb );
+
+            // get texture data
+            int bufferSize = data.Height * data.Stride;
+            byte[] bytes = new byte[bufferSize];
+            texture.GetData<byte>( bytes );
+
+            // copy data into Bitmap
+            Marshal.Copy( bytes, 0, data.Scan0,  bufferSize );
+
+            bitmap.UnlockBits( data );
+
+            return bitmap;
+        }
     }
 }
