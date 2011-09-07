@@ -718,7 +718,7 @@ namespace GlyphRecognitionStudio
                                 modelsToDisplay.Add( new VirtualModel(
                                     ( (GlyphVisualizationData) glyph.RecognizedGlyph.UserData ).ModelName,
                                     glyph.TransformationMatrix,
-                                    113 ) );
+                                    imageProcessor.GlyphSize ) );
                             }
                         }
 

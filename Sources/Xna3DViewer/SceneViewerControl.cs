@@ -103,6 +103,9 @@ namespace Xna3DViewer
                     // display all models
                     foreach ( VirtualModel virtualModel in modelsToDisplay )
                     {
+                        if ( virtualModel.Size <= 0 )
+                            continue;
+
                         try
                         {
                             Model model = modelsCollection.GetModel( this, virtualModel.Name );
