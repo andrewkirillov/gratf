@@ -1,7 +1,7 @@
 ﻿// Gliph Recognition Library
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010
+// Copyright © Andrew Kirillov, 2010-2011
 // andrew.kirillov@aforgenet.com
 //
 
@@ -27,28 +27,17 @@ namespace AForge.Vision.GlyphRecognition
     /// 
     public class GlyphTracker
     {
-        private class TrackedGlyph
-        {
-            public readonly int ID;
-            public readonly ExtractedGlyphData Glyph;
-
-            public int Age = 0;
-            public Point Position;
-
-            public TrackedGlyph( int id, ExtractedGlyphData glyph, Point position  )
-            {
-                ID = id;
-                Glyph = glyph;
-                Position = position;
-            }
-        }
-
         private int counter = 1;
         private Dictionary<int, TrackedGlyph> trackedGlyphs = new Dictionary<int, TrackedGlyph>( );
         private Dictionary<int, Matrix3x3> prevRotation = new Dictionary<int, Matrix3x3>( );
 
-        private const int MaxGlyphAge = 10;
+        // TODO: age constants should be changed to time, not number of frames
+        private const int MaxGlyphAge = 30;
+        private const int MaxStalledGlyphAge = 1000;
         private const int MaxGlyphShaking = 1;
+        private const int MaxAllowedDistance = 150;
+
+        private const int StalledAverageMotionLimit = 2;
 
         // size of the image containing glyphs
         private System.Drawing.Size imageSize = new System.Drawing.Size( 640, 480 );
@@ -257,6 +246,14 @@ namespace AForge.Vision.GlyphRecognition
                 }
             }
 
+            // if the glyph is further away than the maximum specified limit,
+            // then it is no way can be treated as smooth motion, so reset ID
+            // (TODO: should probably depend on glyph size ...)
+            if ( ( glyphID != -1 ) && ( minDistance > MaxAllowedDistance ) )
+            {
+                glyphID = -1;
+            }
+
             // if glyph was not found within tracked glyphs, then add new
             // glyph to tracker
             if ( glyphID == -1 )
@@ -267,21 +264,28 @@ namespace AForge.Vision.GlyphRecognition
             }
             else
             {
+                TrackedGlyph trackedGlyph = trackedGlyphs[glyphID];
+
                 if ( ( glyph.RecognizedGlyph != null ) &&
                      ( !IsCoordinatesDifferenceSignificant( glyph.RecognizedQuadrilateral,
                        trackedGlyphs[glyphID].Glyph.RecognizedQuadrilateral ) ) )
                 {
                     // correct coordinates of recognized glyphs to eliminate small noisy shaking
-                    glyph.RecognizedQuadrilateral = trackedGlyphs[glyphID].Glyph.RecognizedQuadrilateral;
-                    // reset age of the tracked glyph
-                    trackedGlyphs[glyphID].Age = 0;
+                    glyph.RecognizedQuadrilateral = trackedGlyph.Glyph.RecognizedQuadrilateral;
+                    glyphCog = trackedGlyph.Position;
                 }
                 else
                 {
                     // update glyph with the latest CoG and recognized info
-                    trackedGlyphs[glyphID] = new TrackedGlyph( glyphID,
-                        (ExtractedGlyphData) glyph.Clone( ), glyphCog );
+                    trackedGlyph.Position = glyphCog;
+                    trackedGlyph.Glyph = (ExtractedGlyphData) glyph.Clone( );
                 }
+
+                // reset age of the tracked glyph
+                trackedGlyph.Age = 0;
+
+                // add glyph's position to history
+                trackedGlyph.AddMotionHistory( glyphCog );
             }
 
             return glyphID;
@@ -389,8 +393,12 @@ namespace AForge.Vision.GlyphRecognition
             for ( int i = 0; i < keys.Count; i++ )
             {
                 int id = keys[i];
+                TrackedGlyph trackedGlyph = trackedGlyphs[id];
 
-                if ( ++trackedGlyphs[id].Age > MaxGlyphAge )
+                trackedGlyph.Age++;
+
+                if ( ( ( trackedGlyph.Age > MaxGlyphAge ) && ( trackedGlyph.AverageRecentMotion >= StalledAverageMotionLimit ) ) ||
+                       ( trackedGlyph.Age > MaxStalledGlyphAge ) )
                 {
                     trackedGlyphs.Remove( id );
 
@@ -399,6 +407,52 @@ namespace AForge.Vision.GlyphRecognition
                         prevRotation.Remove( id );
                     }
                 }
+            }
+        }
+
+        // Information about the the tracked glyph
+        private class TrackedGlyph
+        {
+            private const int MaxMotionHistoryLength = 11;
+            private const int RecentStepsCount = 10;
+
+            public readonly int ID;
+
+            public ExtractedGlyphData Glyph;
+            public int Age = 0;
+            public Point Position;
+
+            private readonly List<Point> motionHistory = new List<Point>( );
+            public double RecentPathLength = 0;
+            public double AverageRecentMotion = 0;
+
+            public TrackedGlyph( int id, ExtractedGlyphData glyph, Point position )
+            {
+                ID = id;
+                Glyph = glyph;
+                Position = position;
+            }
+
+            public void AddMotionHistory( Point position )
+            {
+                motionHistory.Add( position );
+
+                if ( motionHistory.Count > MaxMotionHistoryLength )
+                {
+                    motionHistory.RemoveAt( 0 );
+                }
+
+                // calculate amount of recent movement
+                RecentPathLength = 0;
+                int stepsCount = Math.Min( RecentStepsCount, motionHistory.Count - 1 );
+                int historyLimit = MaxMotionHistoryLength - stepsCount;
+
+                for ( int i = motionHistory.Count - 1; i >= historyLimit; i-- )
+                {
+                    RecentPathLength += motionHistory[i].DistanceTo( motionHistory[i - 1] );
+                }
+
+                AverageRecentMotion = ( stepsCount == 0 ) ? 0 : RecentPathLength / stepsCount;
             }
         }
     }
