@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Text;
 using System.Windows.Forms;
@@ -20,6 +21,8 @@ using AForge.Math;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Vision.GlyphRecognition;
+using AForge.Imaging;
+using AForge.Imaging.Filters;
 
 using Xna3DViewer;
 
@@ -700,6 +703,16 @@ namespace GlyphRecognitionStudio
         {
             if ( activeGlyphDatabase != null )
             {
+                if ( image.PixelFormat == PixelFormat.Format8bppIndexed )
+                {
+                    // convert image to RGB if it is grayscale
+                    GrayscaleToRGB filter = new GrayscaleToRGB( );
+
+                    Bitmap temp = filter.Apply( image );
+                    image.Dispose( );
+                    image = temp;
+                }
+
                 lock ( sync )
                 {
                     List<ExtractedGlyphData> glyphs = imageProcessor.ProcessImage( image );
