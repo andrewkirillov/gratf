@@ -161,6 +161,7 @@
     <EmbeddedResource Include="ModelImages\ship2.png" />
     <EmbeddedResource Include="ModelImages\ship3.png" />
     <EmbeddedResource Include="ModelImages\ship4.png" />
+    <EmbeddedResource Include="ModelImages\ship5.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
