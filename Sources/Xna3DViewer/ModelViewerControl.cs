@@ -58,40 +58,37 @@ namespace Xna3DViewer
                 // draw simple models for now with single mesh
                 if ( ( model != null ) && ( model.Meshes.Count == 1 ) )
                 {
+                    ModelMesh mesh = model.Meshes[0];
+
                     // spin the object according to how much time has passed
                     float time = (float) timer.Elapsed.TotalSeconds;
 
-                    float yaw   = time * 0.5f;
-                    float pitch = time * 0.6f;
-                    float roll  = time * 0.7f;
+                    // object's rotation and transformation matrices
+                    Matrix rotation = Matrix.CreateFromYawPitchRoll(
+                        time * 0.5f, time * 0.6f, time * 0.7f );
+                    Matrix translation = Matrix.CreateTranslation( 0, 0, 0 );
 
                     // create transform matrices
-                    Matrix rotation = Matrix.CreateFromYawPitchRoll( yaw, pitch, roll );
-                    Matrix viewMatrix = Matrix.CreateLookAt( new Vector3( 0, 0, 3 ), Vector3.Zero, Vector3.Up );
-                    Matrix projectionMatrix = Matrix.CreatePerspectiveFieldOfView( MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1f, 10 );
+                    Matrix viewMatrix = Matrix.CreateLookAt(
+                        new Vector3( 0, 0, 3 ), Vector3.Zero, Vector3.Up );
+                    Matrix projectionMatrix = Matrix.CreatePerspective(
+                        1, 1 / GraphicsDevice.Viewport.AspectRatio, 1f, 10000 );
+                    Matrix world = Matrix.CreateScale( 1 / mesh.BoundingSphere.Radius ) *
+                        rotation * translation;
 
-                    Vector3 pos = new Vector3(0, 0, 0 );
-
-                    foreach ( ModelMesh mesh in model.Meshes )
+                    foreach ( Effect effect in mesh.Effects )
                     {
-                        Matrix world = rotation *
-                            Matrix.CreateScale( 1 / mesh.BoundingSphere.Radius ) *
-                            Matrix.CreateTranslation( pos );
-
-                        foreach ( Effect effect in mesh.Effects )
+                        if ( effect is BasicEffect )
                         {
-                            if ( effect is BasicEffect )
-                            {
-                                ( (BasicEffect) effect ).EnableDefaultLighting( );
-                            }
-
-                            effect.Parameters["World"].SetValue( world );
-                            effect.Parameters["View"].SetValue( viewMatrix );
-                            effect.Parameters["Projection"].SetValue( projectionMatrix );
+                            ( (BasicEffect) effect ).EnableDefaultLighting( );
                         }
 
-                        mesh.Draw( );
+                        effect.Parameters["World"].SetValue( world );
+                        effect.Parameters["View"].SetValue( viewMatrix );
+                        effect.Parameters["Projection"].SetValue( projectionMatrix );
                     }
+
+                    mesh.Draw( );
                 }
             }
         }
