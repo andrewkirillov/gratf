@@ -1,10 +1,10 @@
 GRATF 2.0.0 release notes
 ------------------------------
-xx.09.2011.
+19.09.2011.
 
 Version updates and fixes:
 
-* The project updated to use AForge.NET framework version 2.2.2
+* The project is updated to use AForge.NET framework version 2.2.2
 
 * Glyph recognition/tracking library
   - Added glyph tracking class, which tracks glyphs throughout a video stream.
@@ -18,7 +18,7 @@ Version updates and fixes:
   - Added possibility to print glyphs from the application.
   
   - Added XNA based visualizer of 3D augmented reality. It puts 3D object on top
-    of recognized glyph using same pose as the glyph has.
+    of a recognized glyph using same pose as the glyph has.
 
 
 
