@@ -38,10 +38,10 @@ namespace Xna3DViewer
         PresentationParameters parameters;
 
         // IGraphicsDeviceService events.
-        public event EventHandler DeviceCreated;
-        public event EventHandler DeviceDisposing;
-        public event EventHandler DeviceReset;
-        public event EventHandler DeviceResetting;
+        public event EventHandler<EventArgs> DeviceCreated;
+        public event EventHandler<EventArgs> DeviceDisposing;
+        public event EventHandler<EventArgs> DeviceReset;
+        public event EventHandler<EventArgs> DeviceResetting;
 
         /// <summary>
         /// Constructor is private, because this is a singleton class:
@@ -55,13 +55,13 @@ namespace Xna3DViewer
             parameters.BackBufferHeight = Math.Max( height, 1 );
             parameters.BackBufferFormat = SurfaceFormat.Color;
 
-            parameters.EnableAutoDepthStencil = true;
-            parameters.AutoDepthStencilFormat = DepthFormat.Depth24;
+            parameters.DeviceWindowHandle = windowHandle;
+            parameters.DepthStencilFormat = DepthFormat.Depth24;
+            parameters.IsFullScreen = false; 
 
             graphicsDevice = new GraphicsDevice( GraphicsAdapter.DefaultAdapter,
-                                                DeviceType.Hardware,
-                                                windowHandle,
-                                                parameters );
+                                                 GraphicsProfile.HiDef,
+                                                 parameters );
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿// Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010-2011
+// Copyright © Andrew Kirillov, 2010-2012
 // andrew.kirillov@aforgenet.com
 //
 
@@ -75,18 +75,20 @@ namespace Xna3DViewer
                 if ( texture != null )
                 {
                     // draw texture containing video frame
-                    mainSpriteBatch.Begin( SpriteBlendMode.None );
+                    mainSpriteBatch.Begin( 0, BlendState.Opaque );
                     mainSpriteBatch.Draw( texture, new Vector2( 0, 0 ), Color.White );
                     mainSpriteBatch.End( );
 
                     // restore state of some graphics device's properties after 2D graphics,
                     // so 3D rendering will work fine
-                    GraphicsDevice.RenderState.DepthBufferEnable = true;
-                    GraphicsDevice.RenderState.AlphaBlendEnable = false;
-                    GraphicsDevice.RenderState.AlphaTestEnable = false;
+                    GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                    GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-                    GraphicsDevice.SamplerStates[0].AddressU = TextureAddressMode.Wrap;
-                    GraphicsDevice.SamplerStates[0].AddressV = TextureAddressMode.Wrap;
+                    GraphicsDevice.SamplerStates[0] = new SamplerState
+                    {
+                        AddressU = TextureAddressMode.Wrap,
+                        AddressV = TextureAddressMode.Wrap
+                    };
                 }
 
                 if ( modelsToDisplay.Count != 0 )
@@ -148,12 +150,34 @@ namespace Xna3DViewer
                                 {
                                     if ( effect is BasicEffect )
                                     {
-                                        ( (BasicEffect) effect ).EnableDefaultLighting( );
-                                    }
+                                        BasicEffect basicEffect = (BasicEffect) effect;
 
-                                    effect.Parameters["World"].SetValue( world );
-                                    effect.Parameters["View"].SetValue( viewMatrix );
-                                    effect.Parameters["Projection"].SetValue( projectionMatrix );
+                                        basicEffect.EnableDefaultLighting( );
+
+                                        basicEffect.World = world;
+                                        basicEffect.View = viewMatrix;
+                                        basicEffect.Projection = projectionMatrix;
+                                    }
+                                    else
+                                    {
+                                        EffectParameter param = effect.Parameters["World"];
+                                        if ( param != null )
+                                        {
+                                            param.SetValue( world );
+                                        }
+
+                                        param = effect.Parameters["View"];
+                                        if ( param != null )
+                                        {
+                                            param.SetValue( viewMatrix );
+                                        }
+
+                                        param = effect.Parameters["Projection"];
+                                        if ( param != null )
+                                        {
+                                            param.SetValue( projectionMatrix );
+                                        }
+                                    }
                                 }
 
                                 mesh.Draw( );

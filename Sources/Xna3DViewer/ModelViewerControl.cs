@@ -1,7 +1,7 @@
 // Glyph Recognition Studio
 // http://www.aforgenet.com/projects/gratf/
 //
-// Copyright © Andrew Kirillov, 2010-2011
+// Copyright © Andrew Kirillov, 2010-2012
 // andrew.kirillov@aforgenet.com
 //
 
@@ -80,12 +80,34 @@ namespace Xna3DViewer
                     {
                         if ( effect is BasicEffect )
                         {
-                            ( (BasicEffect) effect ).EnableDefaultLighting( );
-                        }
+                            BasicEffect basicEffect = (BasicEffect) effect;
 
-                        effect.Parameters["World"].SetValue( world );
-                        effect.Parameters["View"].SetValue( viewMatrix );
-                        effect.Parameters["Projection"].SetValue( projectionMatrix );
+                            basicEffect.EnableDefaultLighting( );
+
+                            basicEffect.World = world;
+                            basicEffect.View = viewMatrix;
+                            basicEffect.Projection = projectionMatrix;
+                        }
+                        else
+                        {
+                            EffectParameter param = effect.Parameters["World"];
+                            if ( param != null )
+                            {
+                                param.SetValue( world );
+                            }
+
+                            param = effect.Parameters["View"];
+                            if ( param != null )
+                            {
+                                param.SetValue( viewMatrix );
+                            }
+
+                            param = effect.Parameters["Projection"];
+                            if ( param != null )
+                            {
+                                param.SetValue( projectionMatrix );
+                            }
+                        }
                     }
 
                     mesh.Draw( );

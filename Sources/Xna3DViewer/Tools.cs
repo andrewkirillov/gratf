@@ -21,20 +21,36 @@ namespace Xna3DViewer
             int width  = bitmap.Width;
             int height = bitmap.Height;
 
-            Texture2D texture = new Texture2D( device, width, height,
-                1, TextureUsage.None, SurfaceFormat.Color );
+            Texture2D texture = new Texture2D( device, width, height, false, SurfaceFormat.Color );
 
             BitmapData data = bitmap.LockBits( new Rectangle( 0, 0, width, height ),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb );
 
-            int bufferSize = data.Height * data.Stride;
-
-            // copy bitmap data into texture
+            int bufferSize = width * height * 4;
             byte[] bytes = new byte[bufferSize];
-            Marshal.Copy( data.Scan0, bytes, 0, bytes.Length );
-            texture.SetData( bytes );
+            
+            // copy bitmap data into texture
+            unsafe
+            {
+                byte* ptr = (byte*) data.Scan0.ToPointer( );
+                int offset = data.Stride - 4 * width;
+
+                for ( int y = 0, i = 0; y < height; y++ )
+                {
+                    for ( int x = 0; x < width; x++, ptr += 4 )
+                    {
+                        bytes[i++] = ptr[2];
+                        bytes[i++] = ptr[1];
+                        bytes[i++] = ptr[0];
+                        bytes[i++] = ptr[3];
+                    }
+                    ptr += offset;
+                }
+            }
 
             bitmap.UnlockBits( data );
+
+            texture.SetData( bytes );
 
             return texture;
         }
@@ -42,12 +58,15 @@ namespace Xna3DViewer
         // Get Bitmap screenshot of specified XNA device
         public static Bitmap BitmapFromDevice( GraphicsDevice device )
         {
+            PresentationParameters pp = device.PresentationParameters;
+
             // get texture out of XNA device first
-            ResolveTexture2D deviceTexture = new ResolveTexture2D( device,
+            RenderTarget2D  deviceTexture = new RenderTarget2D( device,
                 device.PresentationParameters.BackBufferWidth,
                 device.PresentationParameters.BackBufferHeight,
-                1, device.PresentationParameters.BackBufferFormat );
-            device.ResolveBackBuffer( deviceTexture );
+                false, device.PresentationParameters.BackBufferFormat,
+                pp.DepthStencilFormat );
+            device.SetRenderTarget( deviceTexture );
 
             // convert texture to bitmap
             Bitmap bitmap = BitmapFromTexture( deviceTexture );
