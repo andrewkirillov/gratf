@@ -1,3 +1,18 @@
+GRATF 2.0.1 release notes
+------------------------------
+06.03.2012.
+
+Version updates and fixes:
+
+* The project is updated to use AForge.NET framework version 2.2.4.1.
+
+* The project is updated to use Visual Studion .NET 2010 (C# Express Edition 2010 is fine to use).
+
+* The project is updated to use XNA 4.0.
+
+
+
+
 GRATF 2.0.0 release notes
 ------------------------------
 19.09.2011.
